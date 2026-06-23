@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Japan Reise 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<style>body{margin:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const TRIP_START = new Date(2026, 8, 2);
+function getTripDay() { return Math.floor((new Date() - TRIP_START) / 86400000) + 1; }
+
+// ─── BAUHAUS PALETTE ─────────────────────────────────────────
+const RED = "#E63329", BLU = "#1457A8", YEL = "#F4B41A", BLK = "#16110D", CANVAS = "#EDE8DC", PAPER = "#FBFAF5";
+const MARK = [RED, BLU, YEL, BLK, "#3D7A3D", "#7B3F9E", "#C9622B"];
+const fgOn = c => (c === YEL ? BLK : "#fff");
+
+// ─── LEAFLET LOADER ──────────────────────────────────────────
+let _lfReady = false, _lfCbs = [];
+function loadLeaflet(cb) {
+  if (_lfReady) { cb(); return; }
+  _lfCbs.push(cb);
+  if (_lfCbs.length > 1) return;
+  const lnk = document.createElement('link');
+  lnk.rel = 'stylesheet';
+  lnk.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+  document.head.appendChild(lnk);
+  const sc = document.createElement('script');
+  sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+  sc.onload = () => { _lfReady = true; _lfCbs.forEach(f => f()); _lfCbs = []; };
+  document.body.appendChild(sc);
+}
+
+function MapView({ center, zoom, stops, height = "200px" }) {
+  const divRef = useRef(null);
+  const mapRef = useRef(null);
+  const [rdy, setRdy] = useState(typeof window !== 'undefined' && !!window.L);
+  useEffect(() => { loadLeaflet(() => setRdy(true)); }, []);
+  useEffect(() => {
+    if (!rdy || !divRef.current || mapRef.current) return;
+    const L = window.L;
+    const map = L.map(divRef.current, { zoomControl: false, scrollWheelZoom: false }).setView(center, zoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    stops.forEach((s, i) => {
+      const c = MARK[i % MARK.length];
+      const ic = L.divIcon({ html: `<div style="background:${c};color:${fgOn(c)};width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;border:2.5px solid #16110D;box-shadow:2px 2px 0 0 #16110D">${i+1}</div>`, className:'', iconSize:[24,24], iconAnchor:[12,12] });
+      L.marker(s.c, { icon: ic }).bindPopup(`<b>${s.n}</b>`).addTo(map);
+    });
+    if (stops.length > 1) L.polyline(stops.map(s => s.c), { color: BLK, weight: 2.5, opacity: .6, dashArray: '1,6' }).addTo(map);
+    mapRef.current = map;
+    return () => { if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
+  }, [rdy]);
+  if (!rdy) return <div style={{ height, border:`2px solid ${BLK}` }} className="bg-stone-200 flex items-center justify-center text-xs font-bold" >KARTE LÄDT…</div>;
+  return <div ref={divRef} style={{ height, width:'100%', border:`2px solid ${BLK}`, overflow:'hidden', zIndex:0 }} />;
+}
+
+// ─── OVERVIEW MAP ────────────────────────────────────────────
+const OVERVIEW = { c:[35.2,137.6], z:6, s:[
+  { n:"Tokyo (Basis, 5N)", c:[35.676,139.650] },
+  { n:"Kamakura (Ausflug)", c:[35.319,139.546] },
+  { n:"Hakone/Gora (3N)", c:[35.241,139.027] },
+  { n:"Atami (Ausflug)", c:[35.097,139.071] },
+  { n:"Kyoto (5N)", c:[35.012,135.768] },
+  { n:"Nara (Ausflug)", c:[34.689,135.839] },
+  { n:"Osaka (4N)", c:[34.694,135.502] },
+  { n:"Tokyo Rückkehr (2N)", c:[35.690,139.700] },
+]};
+
+const DM = {
+  1:{c:[35.61,139.75],z:11,s:[{n:"Haneda Airport",c:[35.549,139.780]},{n:"Comfort Hotel ERA",c:[35.691,139.780]}]},
+  2:{c:[35.71,139.79],z:14,s:[{n:"Hotel ERA (Start)",c:[35.691,139.780]},{n:"Senso-ji Tempel",c:[35.715,139.797]},{n:"Nakamise Straße",c:[35.712,139.796]},{n:"Sumida River Walk",c:[35.700,139.800]},{n:"Asakusa Culture Center",c:[35.712,139.796]}]},
+  3:{c:[35.681,139.697],z:13,s:[{n:"Map Camera",c:[35.694,139.703]},{n:"Meiji-Schrein",c:[35.676,139.699]},{n:"Yoyogi Park",c:[35.671,139.696]},{n:"Harajuku Omotesando",c:[35.665,139.712]},{n:"Isetan Depachika",c:[35.690,139.703]}]},
+  4:{c:[35.678,139.750],z:13,s:[{n:"Tsukiji Outer Market",c:[35.665,139.770]},{n:"Hamarikyu Gardens",c:[35.660,139.763]},{n:"Tokyo Tower",c:[35.659,139.745]}]},
+  5:{c:[35.670,139.768],z:13,s:[{n:"Hamarikyu Gardens",c:[35.660,139.763]},{n:"Ginza-Spaziergang",c:[35.671,139.765]},{n:"Hotel ERA",c:[35.691,139.780]}]},
+  6:{c:[35.320,139.545],z:13,s:[{n:"Kamakura Station",c:[35.319,139.550]},{n:"Großer Buddha (Kotoku-in)",c:[35.317,139.535]},{n:"Yuigahama Strand",c:[35.300,139.550]}]},
+  7:{c:[35.45,139.25],z:10,s:[{n:"Shinjuku (Start)",c:[35.690,139.700]},{n:"Hakone-Yumoto",c:[35.250,139.077]},{n:"Ryokan Gora",c:[35.241,139.027]}]},
+  8:{c:[35.22,139.03],z:12,s:[{n:"Hakone-Schrein (Torii)",c:[35.200,139.031]},{n:"Owakudani",c:[35.264,139.025]},{n:"Togendai (Piratenschiff)",c:[35.232,139.013]},{n:"Hakone-Machi",c:[35.196,139.022]}]},
+  9:{c:[35.17,139.06],z:12,s:[{n:"Gora (Start)",c:[35.241,139.027]},{n:"Atami Station",c:[35.097,139.071]},{n:"Atami Sun Beach",c:[35.093,139.082]},{n:"MOA Museum of Art",c:[35.105,139.075]}]},
+  10:{c:[35.20,137.50],z:7,s:[{n:"Hakone-Yumoto",c:[35.250,139.077]},{n:"Odawara",c:[35.256,139.155]},{n:"Rihga Royal Kyoto",c:[34.994,135.755]}]},
+  11:{c:[34.99,135.77],z:14,s:[{n:"Rihga Royal Hotel",c:[34.994,135.755]},{n:"Fushimi Inari Taisha",c:[34.967,135.773]}]},
+  12:{c:[34.69,135.84],z:14,s:[{n:"Nara Station",c:[34.686,135.833]},{n:"Nara Park (Rehe)",c:[34.689,135.839]},{n:"Todai-ji (Großer Buddha)",c:[34.688,135.839]},{n:"Kasuga Taisha",c:[34.681,135.848]}]},
+  13:{c:[35.016,135.673],z:15,s:[{n:"Sagano Bambuswald",c:[35.016,135.671]},{n:"Tenryu-ji Tempel",c:[35.017,135.676]},{n:"Yudofu Restaurant",c:[35.015,135.676]},{n:"Okochi Sanso Villa",c:[35.018,135.668]}]},
+  14:{c:[35.005,135.766],z:15,s:[{n:"Nishiki Market",c:[35.005,135.766]},{n:"Kinkaku-ji / Kiyomizu-dera",c:[35.039,135.729]},{n:"Kaiseki-Restaurant (TBD)",c:[35.010,135.760]}]},
+  15:{c:[34.85,135.66],z:9,s:[{n:"Kyoto Station",c:[34.986,135.759]},{n:"Royal Park Canvas Osaka",c:[34.705,135.496]}]},
+  16:{c:[34.670,135.503],z:15,s:[{n:"Dotonbori",c:[34.668,135.502]},{n:"Kuromon Ichiba",c:[34.666,135.506]},{n:"Naniwa Camera",c:[34.672,135.501]}]},
+  17:{c:[34.77,135.48],z:12,s:[{n:"Hotel Osaka",c:[34.705,135.496]},{n:"Minoh Wasserfall",c:[34.843,135.475]},{n:"Osaka Castle Park (Alt.)",c:[34.687,135.526]}]},
+  18:{c:[34.685,135.500],z:13,s:[{n:"Osaka/Umeda Station",c:[34.702,135.496]},{n:"Umeda Sky Building (Aussicht)",c:[34.705,135.490]},{n:"HEP Five Riesenrad",c:[34.704,135.500]},{n:"Food Tour Dotonbori",c:[34.668,135.502]}]},
+  19:{c:[35.30,137.40],z:8,s:[{n:"Shin-Osaka (Start)",c:[34.733,135.500]},{n:"Tokyo Station",c:[35.681,139.767]}]},
+  20:{c:[35.71,139.79],z:15,s:[{n:"Senso-ji FRÜH (6:30!)",c:[35.715,139.797]},{n:"Nakamise Straße",c:[35.712,139.796]},{n:"Sumida Park",c:[35.700,139.800]}]},
+  21:{c:[35.58,139.92],z:10,s:[{n:"Airbnb Tokio 2",c:[35.690,139.700]},{n:"Narita Airport",c:[35.772,140.393]}]},
+};
+
+// ─── DAYS ────────────────────────────────────────────────────
+const DAYS = [
+  { nr:1, datum:"Mi 2.9.", ort:"Tokio", strecke:"Haneda → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+    top3:["Ankunft Haneda 22:20 (Langstreckenflug)","Immigration & Gepäck (Flughafen-Abfertigung)","Taxi zum Hotel (Nacht-Transfer)"],
+    ablauf:[["22:20","Landung Haneda (Int. Flughafen)","—","Baby wahrscheinlich wach nach Langstrecke"],["22:20–23:20","Immigration, Zoll, Gepäck (Abfertigung)","~60 Min.","Wickelraum im Terminal, auch nachts"],["23:45–00:20","Taxi zum Hotel (Nacht-Transfer)","~35 Min.","Baby schläft; kein Umsteigen"],["00:45+","Sofort schlafen! (Pflicht)","—","⚠️ Isabelle: Auch IHR habt Jetlag + Schlafmangel — erster Tag ist hart für alle"]],
+    info:["🚕 Taxi empfohlen: ~3.500–6.000 Yen · direkt, ruhig","💳 SIM-Karte: 24h-Schalter im Terminal (optional)"]},
+  { nr:2, datum:"Do 3.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+    top3:["Senso-ji Tempel (ältester Tokio-Tempel, 645 n.Chr.)","Nakamise Straße (histor. Einkaufsstraße)","Sumida River Walk (Fluss-Promenade, Skytree-Blick)"],
+    ablauf:[["07:00–08:30","Ausschlafen + Frühstück (Hotel inkl., Buffet)","90 Min.","Baby wacht früh auf — Zeit lassen"],["09:30–11:00","⭐ Senso-ji Tempel + Kaminarimon Tor (buddhist. Tempel)","90 Min.","Sehr fotogen, babytauglich, kostenlos"],["11:00–12:00","Nakamise Straße (histor. Einkaufsstraße, 200m)","60 Min.","Street food, Mochi, Souvenirs"],["12:00–13:00","Sumida River Walk (Fluss-Promenade, Skytree-Blick)","60 Min.","Ruhig, Kinderwagen perfekt"],["13:00–15:00","Baby Mittagsschlaf 💤","2 Std.","KRITISCH"],["15:00–16:30","Asakusa Culture Center (kostenloser Aussichtspunkt, 8.OG)","90 Min.","Freier 360°-Blick, klimatisiert"],["18:30–20:00","Dinner nahe Hotel + Baby-Routine","90 Min.",""]],
+    info:["A: Nur Asakusa + Fluss — sehr entspannt","B: + Tokyo Skytree Außenblick (Foto, gratis)","C: Ueno Park (Stadtpark) + Zoo (Pandas!) statt Asakusa"]},
+  { nr:3, datum:"Fr 4.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+    top3:["⭐ Map Camera Shinjuku (6-Etagen Gebrauchtkamera-Paradies)","Meiji-Schrein + Yoyogi Park (Shinto-Schrein + Stadtpark)","Harajuku Omotesando (Luxus-Allee, babytauglich)"],
+    ablauf:[["07:30–08:30","Frühstück Hotel (inkl.)","60 Min.",""],["08:30–09:00","Baby fertig — Reisepass einpacken! (Steuerfreiheit)","30 Min.",""],["09:30–11:30","⭐ Map Camera Nishi-Shinjuku (6 Etagen Gebrauchtkameras)","2 Std.","Ruhig, klimatisiert; Baby in Trage/Kinderwagen"],["11:30–12:30","⭐ Meiji-Schrein (Shinto-Schrein im Stadtwald)","60 Min.","Sehr ruhig, Wald, kostenlos"],["12:30–13:30","Yoyogi Park (Stadtpark, Picknick-Wiese)","60 Min.","Baby kann auf Wiese krabbeln"],["13:30–14:30","Depachika Lunch (Isetan Untergeschoss)","60 Min.","Riesige Auswahl"],["14:30–16:30","Baby Mittagsschlaf 💤","2 Std.","KRITISCH"],["16:30–18:00","Harajuku Omotesando (Luxus-Shopping-Allee)","90 Min.","Breite Bürgersteige, Kinderwagen ideal"],["18:30–20:00","Dinner + Baby-Routine","90 Min.",""]],
+    info:["📷 Map Camera: Nishi-Shinjuku 1-12-5 · Steuerfreiheit mit Reisepass · 10-15% günstiger","🌿 Meiji-Schrein: 175ha Wald, 1920, kostenlos","Optional: Shibuya Sky (Aussichtsplattform 230m) — Tickets vorab! (Empfehlung Michelle)","Optional: Shibuya Crossing (ikonische Kreuzung, Foto-Pflicht)"]},
+  { nr:4, datum:"Sa 5.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+    top3:["Aktiver Tokio-Tag nach Wahl (Markt / Turm / Insel / Museum)","Baby Mittagsschlaf (wichtige Pause)","Abend-Aktivität oder Ruhe"],
+    ablauf:[["07:00–08:30","Frühstück (Option A: 06:30 für Tsukiji!)","90 Min.",""],["09:00–13:00","Hauptaktivität je nach Option (A bis E)","4 Std.",""],["13:00–15:00","Baby Mittagsschlaf 💤","2 Std.","KRITISCH"],["15:00–17:30","Nachmittags-Programm oder Ruhe","2,5 Std.",""],["18:00–20:00","Dinner + Baby-Routine","2 Std.",""]],
+    info:["A: Tsukiji Outer Market (Fisch-Markt, Sushi-Frühstück) — 06:30!, frischeste Sushi","B: Tokyo Skytree (634m Aussichtsturm) + Asakusa Retro — Ticket vorab!","C: Ueno Park (Stadtpark) + Nationalmuseum (Japan-Museum) — klimatisiert","D: Odaiba Insel + TeamLab Planets (digitale Kunst, drinnen) — Ticket vorab!","E: Yanaka-Viertel (authentisches Alt-Tokio, Gassen) + Nezu-Schrein"]},
+  { nr:5, datum:"So 6.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+    top3:["Hamarikyu Gardens (400-J.-alter Kaisergarten am Wasser)","Ginza-Spaziergang (Nobel-Boulevard, breite Straßen)","Vorbereitung Kamakura (Routenplanung, früh schlafen)"],
+    ablauf:[["08:00–09:00","Frühstück Hotel (inkl.)","60 Min.",""],["09:30–11:30","⭐ Hamarikyu Gardens (400-J. Kaisergarten, Teehaus am Wasser)","2 Std.","Ruhig, Kinderwagen ok, 300 Yen"],["11:30–12:30","Ginza-Spaziergang (Nobel-Boulevard, breit)","60 Min.","Ideal für Kinderwagen"],["13:30–15:30","Baby Mittagsschlaf 💤","2 Std.",""],["15:30–17:00","Kamakura vorbereiten: Tickets, Route","90 Min.",""],["17:00–18:30","Rucksack packen — extra Windeln! Babytrage!","90 Min.",""],["18:30–20:00","Dinner früh + Baby-Routine (früh schlafen!)","90 Min.","Morgen früh Aufbruch!"]],
+    info:["☐ JR Yokosuka Line: ~1.000 Yen/Person · Tokio→Kamakura ~60 Min.","☐ Rucksack: Windeln extra, Sonnenschutz, Wasser, Babytrage","Alternative: Nakameguro Kanal-Walk + Shimokitazawa (Vintage-Viertel)"]},
+  { nr:6, datum:"Mo 7.9.", ort:"Kamakura", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+    top3:["⭐ Kotoku-in Großer Buddha (13m Bronze, 1252, UNESCO)","Yuigahama Strand (Sandstrand, Baby im Sand)","Rücktour im Zug (Baby schläft! Mittagsschlaf-Trick)"],
+    ablauf:[["07:30–09:00","Frühstück, Baby fertig, Rucksack (Strandkleidung!)","90 Min.",""],["09:15–10:15","Zug → Kamakura (JR Yokosuka Line)","60 Min.","Baby schläft meist"],["10:30–11:30","⭐ Kotoku-in: Großer Buddha (13m Bronze, 1252, UNESCO)","60 Min.","300 Yen; Kinderwagen ok"],["11:30–12:30","Mittagessen (lokale Soba-Restaurants)","60 Min.",""],["12:30–13:30","Yuigahama Strand ODER Tsurugaoka Hachimangu (Schrein)","60 Min.","Strand: Baby im Sand sehr beliebt"],["13:30–15:00","Zug zurück – Baby schläft im Zug!","60 Min.",""],["17:30–19:30","Letzter Tokio-Abend, Dinner","2 Std.","Morgen Abreise nach Hakone!"]],
+    info:["A: Großer Buddha + Yuigahama Strand (entspannt, Foto + Natur)","B: Großer Buddha + Tsurugaoka Hachimangu (Schrein auf Hügel)","C: Quick — nur Großer Buddha + Lunch (3-4 Std. total)"]},
+  { nr:7, datum:"Di 8.9.", ort:"Hakone", strecke:"Tokio → Hakone", hotel:"Ryokan Gora (TBD)",
+    top3:["⭐ Odakyu Romancecar (Panorama-Luxuszug)","⭐ Tozan-Bergbahn (1919, 3 Spitzkehren, Japans älteste)","Kaiseki-Dinner + Onsen Nacht 1 (10-Gang Gourmet)"],
+    ablauf:[["07:00–08:00","Frühstück Hotel (letztes Comfort Hotel)","60 Min.",""],["08:00–09:00","Checkout, Gepäck (Koffer per Takkyubin voraus)","60 Min.","Windeln für langen Tag!"],["10:00–11:20","⭐ Romancecar Shinjuku → Hakone-Yumoto (Panoramazug)","80 Min.","Riesenfenster; Baby schläft gut"],["11:20–12:00","Yumoto: Pause, Onsen Manju (Teigtaschen)","40 Min.","Wickelraum am Bahnhof"],["12:00–12:40","⭐ Tozan-Bahn → Gora (Bergbahn 1919, Zickzack-Spitzkehren)","40 Min.","Faszinierende Fahrt durch Bergwald"],["12:40–15:00","Gora Park (franz. Garten) + Check-in vorbereiten","~2 Std.","Check-in ab 15 Uhr"],["15:00–16:30","Check-in Ryokan + Baby Mittagsschlaf 💤","90 Min.","Futon bodennah – ideal für Baby"],["16:30–17:30","Erste Onsen-Session (privat, heiße Quelle)","60 Min.","Eignung für Baby vorher klären!"],["17:30–19:00","⭐ Kaiseki-Dinner Nacht 1 (10-Gang Gourmet)","90 Min.","Allergien vorab angemeldet?"]],
+    info:["🚃 Romancecar vorab buchen! ~1.800 Yen/Person (Odakyu Website)","🎫 Hakone Freepass 3-Tage: ~5.600 Yen digital","🧳 Gepäck Takkyubin: ~1.500-2.000 Yen/Koffer — sehr empfohlen mit Baby!"],
+    ryokans:[{name:"⭐ Yunosumika (Nr. 1)",anreise:"Kabelbahn → Naka-Gora, 5 Min.",baby:"Babybett-Verleih, Spielzeug, Baby-Menü"},{name:"Toki no Yu Setsugetsuka",anreise:"Direkt gegenüber Gora Station",baby:"Familienzimmer 4 Pers., privates Onsen"},{name:"Ajisai Onsen Ryokan",anreise:"~15–20 Min. Fußweg oder Taxi",baby:"3 private Onsen, Spielzeug, 32 m² Studio"}]},
+  { nr:8, datum:"Mi 9.9.", ort:"Hakone", strecke:"Hakone → Hakone", hotel:"Ryokan Gora (TBD)",
+    top3:["⭐ Hakone-Schrein VOR 8 Uhr (Torii-Tor im See, Japan-Ikone)","⭐ Owakudani Vulkan + schwarze Eier (Schwefellandschaft)","⭐ Piratenschiff Lake Ashi (Seenkreuzfahrt, Fuji-Blick)"],
+    ablauf:[["06:30–07:00","⭐ Hakone-Schrein VOR 8 Uhr (Torii-Tor im See)","30-45 Min.","Ab Vormittag 2-3 Std. Wartezeit – früh = perfektes Foto"],["07:00–07:30","Frühstück im Ryokan (traditionell)","30 Min.",""],["08:45–09:15","Kabelbahn Gora → Sounzan","30 Min.","Im Freepass"],["09:15–10:30","Seilbahn → ⭐ Owakudani (aktiver Vulkan, schwarze Eier)","75 Min.","Schwefelgeruch – kurz halten; Eier abkühlen!"],["10:30–12:30","Seilbahn → Togendai + ⭐ Piratenschiff Lake Ashi","120 Min.","Baby liebt Schiff – schläft oft ein"],["12:30–13:15","Hakone-jinja Schrein (am Seeufer)","45 Min.","Torii-Tor im See – nachmittags voller"],["14:00–16:00","Baby Mittagsschlaf 💤 im Ryokan","2 Std.","KRITISCH"],["16:00–17:30","Ruhe + 2. Onsen-Session","90 Min.",""],["17:30–19:00","Kaiseki-Dinner Nacht 2 (10-Gang)","90 Min.",""]],
+    info:["⚠️ Mittwoch ideal – Seilbahn am Wochenende = 1,5-2 Std. Wartezeit!","🗺️ Alte Tokaido-Straße (optional, histor. Pilgerweg): Babytrage statt Kinderwagen","🎨 Open-Air-Museum (optional): eigenes Handtuch für Fußbad!"]},
+  { nr:9, datum:"Do 10.9.", ort:"Hakone", strecke:"Hakone → Hakone", hotel:"Ryokan Gora (TBD)",
+    top3:["⭐ Atami Tagesausflug (Onsen-Küstenstadt, 14 Min. Shinkansen)","Atami Sun Beach (Sandstrand, Meeresluft)","MOA Museum of Art (Weltklasse-Kunst, Panorama-Aussicht)"],
+    ablauf:[["07:30–08:30","Frühstück Ryokan (letzter Kaiseki-Morgen!)","60 Min.","Genießen!"],["09:00–09:45","Tozan-Bahn → Yumoto → Odawara JR","45 Min.",""],["09:45–10:00","Shinkansen Kodama Odawara → Atami (Küstenstadt)","14 Min.","~660 Yen/Person; nicht im Freepass"],["10:00–11:30","⭐ Atami Sun Beach + Küstenspaziergang (Meeresbrise)","90 Min.","Baby liebt Meeresluft; Kinderwagen ok"],["11:30–13:00","⭐ MOA Museum of Art (Kunst, Terrasse mit Panorama)","90 Min.","Spektakuläre Aussicht, klimatisiert"],["13:00–14:00","Mittagessen Atami (Meeresfrüchte, günstig!)","60 Min.",""],["14:00–15:00","Rückfahrt nach Gora (Baby schläft im Zug)","60 Min.",""],["15:00–16:30","Baby Mittagsschlaf 💤 im Ryokan","90 Min.",""],["16:30–17:30","Letzte Onsen-Session (Abschiedsritual)","60 Min.",""],["17:30–19:00","Kaiseki-Dinner Nacht 3 (letzter Abend!)","90 Min.",""]],
+    info:["📍 Alternative: Hakone Open-Air-Museum (Kletterbereiche, Fußbad)","🌊 Atami = klassische Onsen-Küstencity, 14 Min. ab Odawara"]},
+  { nr:10, datum:"Fr 11.9.", ort:"Kyoto", strecke:"Hakone → Kyoto", hotel:"Rihga Royal Hotel Kyoto",
+    top3:["Morgen-Onsen letzter Slot (Abschiedsritual)","Shinkansen Odawara → Kyoto (Fuji-Chance)","Check-in Rihga Royal (5-Sterne, inkl. Frühstück)"],
+    ablauf:[["07:00–07:30","Morgen-Onsen (letzter Slot!)","30 Min.",""],["07:30–08:30","Frühstück Ryokan (letztes Kaiseki-Frühstück!)","60 Min.",""],["09:00–09:45","Checkout + Tozan-Bahn → Yumoto → Odawara","45 Min.",""],["10:15–11:45","Shinkansen Odawara → Kyoto (280 km/h)","~90 Min.","Fensterplatz rechts für Fuji-Blick"],["12:00–14:00","Ankunft Kyoto, Taxi, Check-in Rihga Royal","~90 Min.","Babybett bestätigt?"],["14:00–16:00","Baby Mittagsschlaf 💤 + Eure Ruhe","2 Std.",""],["16:00–18:00","Kyoto Bahnhof (modernes Design, Aussicht 11.OG gratis)","2 Std.",""],["18:00–19:30","Dinner nahe Hotel","90 Min.",""]],
+    info:[]},
+  { nr:11, datum:"Sa 12.9.", ort:"Kyoto", strecke:"Kyoto → Kyoto", hotel:"Rihga Royal Hotel Kyoto",
+    top3:["⭐ Fushimi Inari Taisha (1000 rote Torii-Tore, Bergtempel)","Sake-Brauerei Fushimi (optional, histor. Brauviertel)","Rihga Royal Frühstück (sehr gutes Buffet, inkl.)"],
+    ablauf:[["08:00–09:00","⭐ Rihga Royal Frühstück (sehr gutes Buffet, inkl.)","60 Min.","Genuss!"],["09:30–10:00","JR Nara Line → Inari Station (1 Stop)","30 Min.",""],["10:00–12:00","⭐ Fushimi Inari Taisha (1000 rote Torii-Tore im Bergwald)","2 Std.","Hauptweg: Kinderwagen ok · Oberes Drittel steil: Babytrage"],["12:00–13:00","Mittagessen Fushimi","60 Min.",""],["13:00–15:00","Baby Mittagsschlaf 💤","2 Std.",""],["15:00–16:30","Sake-Brauerei Tour Fushimi (histor. Brauviertel)","90 Min.",""],["18:00–19:30","Dinner + Baby-Routine","90 Min.",""]],
+    info:[]},
+  { nr:12, datum:"So 13.9.", ort:"Kyoto", strecke:"Kyoto → Kyoto", hotel:"Rihga Royal Hotel Kyoto",
+    top3:["⭐ Nara Park (hunderte Sika-Rehe frei laufend)","⭐ Todai-ji Großer Buddha (15m Bronze, 749, größter Japans)","Kasuga Taisha (Shinto-Schrein, 1000 Laternen)"],
+    ablauf:[["08:00–09:00","Frühstück Rihga Royal","60 Min.",""],["09:30–10:15","JR oder Kintetsu → Nara","45-60 Min.",""],["10:30–12:00","⭐ Nara Park (frei laufende Sika-Rehe)","90 Min.","⚠️ Rehe NICHT füttern! Baby auf Arm bei Kontakt"],["12:00–12:45","⭐ Todai-ji (Großer Buddha, 15m Bronze, 749)","45 Min.","600 Yen; beeindruckend"],["12:45–13:15","Kasuga Taisha (Schrein, 1000 Laternen)","30 Min.","Optional, 5 Min. weg"],["14:00–15:00","Zug zurück – Baby schläft im Zug!","60 Min.",""],["15:00–17:00","Baby Mittagsschlaf im Hotel","2 Std.",""],["18:30–19:30","Dinner + Baby-Routine","60 Min.",""]],
+    info:[]},
+  { nr:13, datum:"Mo 14.9.", ort:"Kyoto", strecke:"Kyoto → Kyoto", hotel:"Rihga Royal Hotel Kyoto",
+    top3:["⭐ Arashiyama Bambuswald (dichter Bambus-Hain)","⭐ Yudofu Lunch (Tofu-Eintopf, Kyoto-Spezialität)","Tenryu-ji Tempel + Zen-Garten (UNESCO)"],
+    ablauf:[["08:00–09:00","Frühstück Rihga Royal","60 Min.",""],["09:30–10:00","Randen Linie/Bus nach Arashiyama","30 Min.",""],["10:00–11:00","⭐ Sagano Bambuswald (Bambus-Hain, mystisch)","60 Min.","Weg gepflastert – Kinderwagen ok; früh!"],["11:00–12:00","Tenryu-ji + Zen-Garten (UNESCO, 14. Jhd.)","60 Min.","Babytauglich"],["12:00–13:00","⭐ Yudofu Lunch (Tofu-Eintopf, Spezialität)","60 Min.","Familienfreundlich"],["13:00–15:00","Baby Mittagsschlaf 💤","2 Std.",""],["15:00–16:30","Okochi Sanso Villa (Panorama-Garten, inkl. Matcha)","90 Min.","Weniger Touristen"],["18:00–19:30","Dinner + Baby-Routine","90 Min.",""]],
+    info:[]},
+  { nr:14, datum:"Di 15.9.", ort:"Kyoto", strecke:"Kyoto → Kyoto", hotel:"Rihga Royal Hotel Kyoto",
+    top3:["⭐ Nishiki Market (Kyotos Küche, überdachter Markt)","⭐ Kaiseki-Dinner JETZT RESERVIEREN! (10-Gang Höhepunkt)","Kinkaku-ji ODER Kiyomizu-dera (Ikonen-Tempel)"],
+    ablauf:[["08:00–09:00","Frühstück Rihga Royal (letztes Kyoto-Frühstück!)","60 Min.",""],["09:30–10:00","U-Bahn zu Shijo (Zentrum)","30 Min.",""],["10:00–12:00","⭐ Nishiki Market (400-J.-Markt, 126 Stände)","2 Std.","Sehr eng → Baby im Tuch; Takoyaki, Mochi probieren!"],["12:00–13:00","Kiyamachi/Pontocho (histor. Gassen, Kanalblick)","60 Min.",""],["13:00–15:00","Baby Mittagsschlaf 💤","2 Std.",""],["15:00–16:30","Kinkaku-ji (Goldener Pavillon) ODER Kiyomizu-dera (Holz-Tempel)","90 Min.","Je ~30 Min. Taxi"],["17:30–19:30","⭐ Kaiseki-Dinner (reserviert!, Haute Cuisine)","2 Std.","~8.000-15.000 Yen/Person; Baby ankündigen"]],
+    info:["Rihga Royal kann gutes Restaurant in Gehnähe empfehlen"]},
+  { nr:15, datum:"Mi 16.9.", ort:"Osaka", strecke:"Kyoto → Osaka", hotel:"Royal Park Canvas Osaka",
+    top3:["Checkout Kyoto (letzte Rihga Royal Nacht)","JR Kyoto → Osaka (nur 30 Min.)","Check-in Osaka (Foodie-Hauptstadt, andere Energie!)"],
+    ablauf:[["08:00–09:00","Frühstück Rihga Royal (letztes Mal!)","60 Min.",""],["09:00–09:30","Checkout, Gepäck","30 Min.",""],["10:00–10:30","JR Tokaido Kyoto → Osaka (nur 30 Min.!)","30 Min.",""],["11:00–15:00","Gepäck abgeben, Baby Mittagsschlaf, Umeda erkunden","~4 Std.",""],["15:00–16:00","Check-in Royal Park Canvas (ab 15 Uhr)","60 Min.","Babybett bestätigt?"],["18:30–20:00","Erste Osaka-Erkundung + Dinner Umeda","90 Min.",""]],
+    info:[]},
+  { nr:16, datum:"Do 17.9.", ort:"Osaka", strecke:"Osaka → Osaka", hotel:"Royal Park Canvas Osaka",
+    top3:["⭐ Dotonbori (Osakas Neon-Herz, Glico-Mann, Street Food)","⭐ Kuromon Ichiba Market (trad. Markt, Meeresfrüchte)","Naniwa Camera Shinsaibashi (optional, Gebraucht-Kamera)"],
+    ablauf:[["09:30–10:00","U-Bahn zu Namba (Zentrum)","30 Min.",""],["10:00–12:00","⭐ Dotonbori (Neonlichter, Glico-Mann, Street Food)","2 Std.","Takoyaki, Okonomiyaki, Kushikatsu; laut, belebt"],["12:00–13:00","⭐ Kuromon Ichiba Market (Meeresfrüchte direkt essen)","60 Min.","Günstig, frisch, authentisch"],["13:00–14:00","Mittagessen (Markt-Restaurants)","60 Min.",""],["14:00–16:00","Baby Mittagsschlaf 💤","2 Std.",""],["16:00–17:00","📷 Naniwa Camera Shinsaibashi (Gebrauchtkameras)","60 Min.","Reisepass für Steuerfreiheit!"],["17:00–18:30","Shinsaibashi-suji (überdachte Einkaufsstraße)","90 Min.","Wetterfest!"],["18:30–20:00","Dinner Kushikatsu (frittierte Spieße, Spezialität)","90 Min.",""]],
+    info:["📷 Naniwa Camera: 5 Min. von Dotonbori · Voigtländer, Contax, Fuji · Reisepass für 10% Rabatt"]},
+  { nr:17, datum:"Fr 18.9.", ort:"Osaka", strecke:"Osaka → Osaka", hotel:"Royal Park Canvas Osaka",
+    top3:["Minoh Park (Wasserfall, Bergwald) ODER Osaka Castle Park (Burganlage)","Natur-Ausgleich nach City-Tagen","Tenjinbashi-suji (Japans längste überd. Einkaufsstraße, 2,6 km)"],
+    ablauf:[["08:00–09:30","Frühstück, Baby fertig (Regenjacke!)","90 Min.","September: Regen möglich"],["09:30–10:30","Fahrt zum Ausflugsziel","60 Min.",""],["10:30–13:00","⭐ Natur-Programm (Option A oder B)","2,5 Std.",""],["13:00–14:00","Mittagessen vor Ort","60 Min.",""],["14:00–16:00","Baby Mittagsschlaf 💤","2 Std.",""],["16:00–17:30","Tenjinbashi-suji (längste überd. Einkaufsstraße, 2,6 km!)","90 Min.","Ideal bei Regen, Souvenirs"],["18:30–20:00","Dinner Osaka (Okonomiyaki!)","90 Min.",""]],
+    info:["A: Minoh Park ⭐ (Bergwald, Wasserfall, ~40 Min. Hankyu) – frittierte Ahornblätter!","B: Osaka Castle Park (Burganlage + Park, zentral, Kinderwagen ideal) + Museum optional"]},
+  { nr:18, datum:"Sa 19.9.", ort:"Osaka", strecke:"Osaka → Osaka", hotel:"Royal Park Canvas Osaka",
+    top3:["⭐ Umeda / Osaka Station erkunden (modernes Hochhaus-Viertel)","⭐ Food Tour Dotonbori (geführte Streetfood-Tour, ~3 Std.)","Abschluss-Dinner = Food Tour deckt Dinner ab"],
+    ablauf:[["08:00–09:30","Frühstück, Baby fertig","90 Min.",""],["09:30–10:00","U-Bahn nach Umeda / Osaka Station (Hauptbahnhof-Viertel)","30 Min.",""],["10:00–12:30","⭐ Umeda erkunden: Umeda Sky Building (Aussicht 173m), Grand Front Malls, HEP Five Riesenrad","2,5 Std.","Hochmodern, überdachte Malls, Aufzüge – sehr babytauglich"],["12:30–13:30","Depachika Lunch (Hankyu/Daimaru Food Halls)","60 Min.","Riesige Auswahl"],["13:30–15:30","Baby Mittagsschlaf 💤","2 Std.","KRITISCH – vor der Food Tour ausruhen!"],["16:00–19:00","⭐ Food Tour Dotonbori (geführt, ~3 Std., deckt Dinner ab)","3 Std.","Baby in Trage; Anbieter VORHER über Baby informieren"],["19:00–19:30","Rückweg + Baby-Routine","30 Min.",""]],
+    info:["🏙️ Umeda = Osakas modernes Hochhaus-/Bahnhofsviertel: Umeda Sky Building (Floating Garden Observatory 173m), Grand Front Osaka, HEP Five rotes Riesenrad, Pokémon Center","🍢 Food Tour: siehe Empfehlungen unten – Tagestour bevorzugt wegen Baby-Schlafrhythmus"],
+    foodtours:[{name:"⭐ Daytime Dotonbori Food Tour (Baby-Empfehlung)",detail:"3 Std. tagsüber · Michelin-Takoyaki, Kushikatsu, Izakaya-Set, Dessert · familienfreundlich · ~12.000 Yen/Pers."},{name:"Magical Trip — Dotonbori & Shinsekai",detail:"Tripadvisor Best of Best 2025 · Netflix 'Somebody Feed Phil' · alle Altersgruppen · 3 Std. abends"},{name:"Private personalisierte Food Tour",detail:"100% privat & anpassbar an Baby-Tempo/Nickerchen · max. Flexibilität · Treffpunkt frei wählbar"}]},
+  { nr:19, datum:"So 20.9.", ort:"Tokio", strecke:"Osaka → Tokio", hotel:"Tokio Airbnb (TBD)",
+    top3:["Checkout Osaka (letzter Osaka-Morgen!)","⭐ Shinkansen Nozomi (280 km/h, 2,5 Std., Fuji-Blick)","Check-in Tokio Airbnb (Küche + sep. Schlafzimmer!)"],
+    ablauf:[["07:30–08:30","Frühstück (letztes Osaka – letzte Chance auf Osaka-Küche!)","60 Min.",""],["08:30–09:30","Checkout, Gepäck, Shin-Osaka Station","60 Min.",""],["10:00–12:30","⭐ Shinkansen Nozomi Shin-Osaka → Tokio (280 km/h)","2,5 Std.","Sitzreihe D/E rechts = Fuji-Blick"],["12:30–14:00","Ankunft Tokio, Taxi zu Airbnb","90 Min.",""],["14:00–16:00","Check-in Airbnb + Baby Mittagsschlaf 💤","2 Std.","Küche! Sep. Schlafzimmer! Endlich!"],["16:00–20:00","Neue Umgebung erkunden, Dinner","4 Std.",""]],
+    info:[]},
+  { nr:20, datum:"Mo 21.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Tokio Airbnb (TBD)",
+    top3:["⭐ Asakusa & Senso-ji früh morgens (Empfehlung Michelle)","Nakamise Straße (letzte Souvenirs)","Sumida Park (Fluss-Promenade, Skytree-Blick)"],
+    ablauf:[["06:30–08:00","⭐ Asakusa + Senso-ji FRÜH (Empfehlung Michelle)","90 Min.","Kaum Touristen 6:30-8 Uhr; magische Fotos"],["08:00–09:00","Frühstück in Asakusa (Café/Konbini)","60 Min.",""],["09:00–11:00","Nakamise Straße (histor. Einkaufsstraße, Souvenirs!)","2 Std.","Öffnet ab 10 Uhr"],["11:00–12:30","Sumida Park (Fluss-Promenade, Skytree-Blick)","90 Min.","Sehr ruhig"],["14:00–16:00","Baby Mittagsschlaf 💤","2 Std.",""],["16:00–18:00","Optional: Shibuya Crossing (ikonisch, Sonnenuntergang)","2 Std.",""],["18:30–20:00","Dinner (vorletzter Abend in Japan)","90 Min.",""]],
+    info:[]},
+  { nr:21, datum:"Di 22.9.", ort:"Tokio → Narita", strecke:"Tokio → Narita", hotel:"—",
+    top3:["Checkout Airbnb, Gepäck lagern","Last-Minute Shopping (Konbini, Drogerie)","Abflug 22:20 Narita ✈️ Sayonara Japan!"],
+    ablauf:[["09:00–10:00","Checkout, Gepäck lagern (bis 16 Uhr)","60 Min.",""],["10:00–13:00","Letzter Bummel: Konbini, Drogerie, Souvenirs","3 Std.",""],["13:00–14:00","Letztes Mittagessen Japan (genießen!)","60 Min.",""],["14:00–16:00","Baby Mittagsschlaf 💤 KRITISCH! (langer Flugtag)","2 Std.","Baby ausgeruht für Flug — wichtig!"],["16:00–17:00","Gepäck holen, Taxi bestellen","60 Min.",""],["17:00–18:30","Fahrt Narita Flughafen","~90 Min.",""],["18:30–22:00","Narita: Check-in, Security, Duty Free, Dinner","3,5 Std.",""],["22:20","Abflug Narita → Frankfurt ✈️","—",""]],
+    info:["🚕 Taxi Narita: ~20.000-25.000 Yen · N'EX Bahn: ~3.000 Yen/Pers. · Limousinen-Bus: ~3.200 Yen"]},
+];
+
+const HOTELS = [
+  {s:"Tokio 1",n:"Comfort Hotel ERA Tokyo Higashi Kanda",d:"3.–8.9.",nt:5,k:"509 €",b:"warn",st:"gebucht, nicht bezahlt",sto:"bis 31.08.",bb:"⚠️ anfragen"},
+  {s:"Hakone (jetzt)",n:"GuestVilla Hakone-Yumoto — STORNIEREN!",d:"8.–10.9.",nt:2,k:"159 €",b:"error",st:"STORNIEREN bis 31.08.",sto:"bis 31.08.",bb:"—"},
+  {s:"Hakone (Ziel)",n:"Ryokan Gora: Yunosumika / Setsugetsuka / Ajisai",d:"8.–11.9.",nt:3,k:"~300–500 €",b:"todo",st:"noch buchen",sto:"—",bb:"✅"},
+  {s:"Kyoto",n:"Rihga Royal Hotel Kyoto",d:"11.–16.9.",nt:5,k:"450 €",b:"ok",st:"bezahlt – Datum prüfen!",sto:"bis 05.09.",bb:"⚠️ anfragen"},
+  {s:"Osaka",n:"Royal Park Canvas Osaka",d:"16.–20.9.",nt:4,k:"~350 €",b:"info",st:"reserviert – Datum anpassen!",sto:"bis 07.09.",bb:"⚠️ anfragen"},
+  {s:"Tokio 2",n:"Airbnb mit Küche + sep. Schlafzimmer (noch suchen)",d:"20.–22.9.",nt:2,k:"~90–120 €",b:"todo",st:"noch buchen",sto:"—",bb:"✅ Pflicht"},
+];
+
+const TODOS = {
+  kritisch:[
+    {t:"Tokio 1 bezahlen – Comfort Hotel 509 €",f:"bis 31.08."},
+    {t:"Hakone GuestVilla stornieren (voll erstattbar)",f:"bis 31.08."},
+    {t:"Hakone Gora-Ryokan buchen: 3 Nächte 8.–11.9.",f:"bald!"},
+    {t:"Kyoto Check-in auf 11.9. anpassen – Rihga Royal",f:"bis 05.09."},
+    {t:"Osaka Check-in auf 16.9., 4 Nächte – Royal Park Canvas",f:"bis 07.09."},
+  ],
+  wichtig:[
+    {t:"Osaka Food Tour buchen (Tag 18) – Anbieter über Baby informieren!"},
+    {t:"Hakone: Ryokan auswählen + Onsen-Eignung für Baby klären!"},
+    {t:"Hakone: Allergien/Babybett für Kaiseki vorab anmelden"},
+    {t:"Tokio 2: Airbnb mit Küche + sep. Schlafzimmer (20.–22.9.)"},
+    {t:"Babybett bei ALLEN Unterkünften schriftlich bestätigen!"},
+    {t:"Osaka Natur: Minoh Park oder Osaka Castle Park? (Tag 17)"},
+    {t:"Tokio 1 + Osaka auf Airbnb umstellen?"},
+  ],
+  empfohlen:[
+    {t:"Romancecar reservieren: Shinjuku → Hakone 8.9. (Odakyu Website)"},
+    {t:"Hakone Freepass 3-Tage: ~5.600 Yen digital kaufen"},
+    {t:"Kaiseki-Dinner Kyoto (Tag 14): 1–2 Tage vorher reservieren"},
+    {t:"Shibuya Sky Tickets (falls gewünscht): 2–4 Wochen vorher (Empfehlung Michelle)"},
+    {t:"TeamLab Planets Tokio (falls gewünscht): vorab online buchen!"},
+    {t:"Suica-Karte: bei Haneda kaufen oder vorab digital"},
+    {t:"SIM-Karte / eSIM: bei Haneda oder vorab bestellen"},
+    {t:"Reisekrankenversicherung: Baby explizit mitversichert?"},
+    {t:"Reisepass Baby: gültig? (Kinderreisepass seit 01.01.2024 abgeschafft!)"},
+  ],
+  besprechen:[
+    {t:"Welche Food Tour (Tag 18): Daytime / Magical Trip / Privat?"},
+    {t:"Airbnb-Strategie für alle Stationen: Küche + Schlafzimmer?"},
+    {t:"Kyoto: Kinkaku-ji, Kiyomizu-dera – welche Tempel zusätzlich?"},
+    {t:"Route mit Vicky validieren"},
+  ],
+};
+
+const ORT = { Tokio:BLU, Kamakura:YEL, Hakone:RED, Kyoto:YEL, Osaka:RED, "Tokio → Narita":BLK };
+
+function Sq({ children, color, className = "" }) {
+  return <span className={`inline-flex items-center justify-center font-black ${className}`} style={{ background: color, color: fgOn(color), border: `2px solid ${BLK}` }}>{children}</span>;
+}
+
+function JapanReise() {
+  const [tab, setTab] = useState("tage");
+  const [exp, setExp] = useState(null);
+  const cd = getTripDay();
+  const isTrip = cd >= 1 && cd <= 21;
+  const daysLeft = Math.ceil((TRIP_START - new Date()) / 86400000);
+
+  useEffect(() => { if (isTrip && exp === null) setExp(cd); }, []);
+  const toggle = nr => setExp(exp === nr ? null : nr);
+  const gotoDay = nr => { setTab("tage"); setExp(nr); setTimeout(() => document.getElementById(`d${nr}`)?.scrollIntoView({ behavior:"smooth", block:"center" }), 60); };
+
+  const HARD = { boxShadow: `4px 4px 0 0 ${BLK}` };
+  const HARDSM = { boxShadow: `3px 3px 0 0 ${BLK}` };
+
+  return (
+    <div className="max-w-lg mx-auto min-h-screen pb-24" style={{ background: CANVAS, fontFamily: "'Helvetica Neue', Arial, sans-serif" }}>
+      {/* HEADER */}
+      <div className="sticky top-0 z-20" style={{ background: PAPER, borderBottom: `3px solid ${BLK}` }}>
+        <div className="px-4 pt-4 pb-3">
+          <div className="flex items-center gap-2 mb-1">
+            <span style={{ width:14, height:14, background:RED, border:`2px solid ${BLK}`, borderRadius:'50%' }}></span>
+            <span style={{ width:14, height:14, background:BLU, border:`2px solid ${BLK}` }}></span>
+            <span style={{ width:0, height:0, borderLeft:'8px solid transparent', borderRight:'8px solid transparent', borderBottom:`14px solid ${YEL}` }}></span>
+          </div>
+          <h1 className="font-black uppercase tracking-tighter leading-none" style={{ fontSize:'1.7rem', color:BLK }}>Japan 2026</h1>
+          <p className="text-xs font-bold uppercase tracking-wide mt-1" style={{ color:BLK, opacity:.6 }}>2.–22. Sept · 21 Tage · 2 Erw. + Baby</p>
+        </div>
+        <div className="grid grid-cols-4" style={{ borderTop:`3px solid ${BLK}` }}>
+          {[{id:"uebersicht",lb:"Überblick"},{id:"tage",lb:"Tage"},{id:"hotels",lb:"Hotels"},{id:"todos",lb:"Todos"}].map((t,i) => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className="py-2.5 text-xs font-black uppercase tracking-tight"
+              style={{ background: tab===t.id ? BLK : PAPER, color: tab===t.id ? PAPER : BLK, borderRight: i<3?`2px solid ${BLK}`:'none' }}>
+              {t.lb}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-4 py-4">
+
+        {/* ── ÜBERBLICK ── */}
+        {tab === "uebersicht" && (
+          <div>
+            <div className="grid grid-cols-3 gap-3 mb-5">
+              {[["21","Tage",RED],["4","Umzüge",BLU],[daysLeft>0?daysLeft:"GO",daysLeft>0?"Tage noch":"Los!",YEL]].map(([v,l,c]) => (
+                <div key={l} className="p-3 text-center" style={{ background:c, border:`2px solid ${BLK}`, ...HARDSM }}>
+                  <div className="font-black leading-none" style={{ fontSize:'1.9rem', color:fgOn(c) }}>{v}</div>
+                  <div className="text-xs font-bold uppercase mt-1" style={{ color:fgOn(c) }}>{l}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mb-5">
+              <div className="inline-block px-2 py-1 mb-2 text-xs font-black uppercase tracking-wide" style={{ background:BLK, color:PAPER }}>Route durch Japan</div>
+              <div style={HARD}><MapView center={OVERVIEW.c} zoom={OVERVIEW.z} stops={OVERVIEW.s} height="250px" /></div>
+              <div className="mt-3 grid grid-cols-2 gap-1.5">
+                {OVERVIEW.s.map((s,i) => (
+                  <div key={i} className="flex items-center gap-1.5 text-xs font-medium" style={{ color:BLK }}>
+                    <Sq color={MARK[i%MARK.length]} className="w-4 h-4 text-[10px] shrink-0">{i+1}</Sq>
+                    <span className="truncate">{s.n}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="inline-block px-2 py-1 mb-2 text-xs font-black uppercase tracking-wide" style={{ background:BLK, color:PAPER }}>21-Tage Überblick</div>
+            <div style={{ background:PAPER, border:`2px solid ${BLK}`, ...HARD }}>
+              {DAYS.map((day,i) => (
+                <div key={day.nr} onClick={() => gotoDay(day.nr)}
+                  className="flex items-center gap-3 px-3 py-2 cursor-pointer"
+                  style={{ borderBottom: i<DAYS.length-1?`1px solid ${BLK}22`:'none', background: day.nr===cd?RED:'transparent' }}>
+                  <Sq color={day.nr===cd?BLK:ORT[day.ort]} className="w-7 h-7 text-xs shrink-0">{day.nr}</Sq>
+                  <span className="text-xs font-bold w-14 shrink-0" style={{ color:day.nr===cd?'#fff':BLK }}>{day.datum}</span>
+                  <span className="text-xs truncate" style={{ color:day.nr===cd?'#fff':BLK }}>{day.top3[0].replace("⭐ ","")}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── TAGE ── */}
+        {tab === "tage" && (
+          <div>
+            {isTrip && <div className="text-center text-sm font-black uppercase py-2.5 mb-4" style={{ background:RED, color:'#fff', border:`2px solid ${BLK}`, ...HARDSM }}>Heute: Tag {cd} — {DAYS[cd-1]?.ort}</div>}
+            {!isTrip && cd<1 && <div className="text-center text-sm font-black uppercase py-2.5 mb-4" style={{ background:YEL, color:BLK, border:`2px solid ${BLK}`, ...HARDSM }}>Noch {daysLeft} Tage bis zur Reise!</div>}
+            <div className="space-y-3">
+              {DAYS.map(day => {
+                const today = day.nr === cd;
+                const open = exp === day.nr;
+                const dm = DM[day.nr];
+                const oc = ORT[day.ort];
+                return (
+                  <div key={day.nr} id={`d${day.nr}`} style={{ background:PAPER, border:`${today?3:2}px solid ${BLK}`, ...(open?HARD:HARDSM) }}>
+                    <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => toggle(day.nr)}>
+                      <Sq color={today?RED:oc} className="w-11 h-11 text-lg shrink-0">{day.nr}</Sq>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-bold" style={{ color:BLK }}>{day.datum}</span>
+                          <span className="text-xs font-black uppercase px-1.5 py-0.5" style={{ background:oc, color:fgOn(oc), border:`1.5px solid ${BLK}` }}>{day.ort}</span>
+                          {today && <span className="text-xs font-black uppercase px-1.5 py-0.5" style={{ background:BLK, color:'#fff' }}>Heute</span>}
+                        </div>
+                        <div className="text-xs font-medium mt-0.5" style={{ color:BLK, opacity:.55 }}>{day.strecke}</div>
+                        <div className="text-sm font-bold mt-1 leading-tight" style={{ color:BLK }}>{day.top3[0]}</div>
+                      </div>
+                      <span className="font-black text-lg" style={{ color:BLK }}>{open?"–":"+"}</span>
+                    </div>
+
+                    {open && (
+                      <div className="px-3 pb-3 space-y-3" style={{ borderTop:`2px solid ${BLK}` }}>
+                        <div className="text-xs font-bold pt-2" style={{ color:BLK }}>🏨 {day.hotel}</div>
+
+                        {dm && (
+                          <div>
+                            <div className="inline-block px-1.5 py-0.5 mb-1.5 text-xs font-black uppercase" style={{ background:BLU, color:'#fff' }}>Karte</div>
+                            <div style={HARDSM}><MapView center={dm.c} zoom={dm.z} stops={dm.s} height="190px" /></div>
+                            <div className="mt-2 space-y-0.5">
+                              {dm.s.map((s,i) => (
+                                <div key={i} className="flex items-center gap-1.5 text-xs" style={{ color:BLK }}>
+                                  <Sq color={MARK[i%MARK.length]} className="w-4 h-4 text-[10px] shrink-0">{i+1}</Sq>
+                                  <span>{s.n}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <div>
+                          <div className="inline-block px-1.5 py-0.5 mb-1.5 text-xs font-black uppercase" style={{ background:RED, color:'#fff' }}>Highlights</div>
+                          {day.top3.map((t,i) => (
+                            <div key={i} className="flex gap-2 text-sm mt-1" style={{ color:BLK }}>
+                              <Sq color={YEL} className="w-4 h-4 text-[10px] shrink-0 mt-0.5">{i+1}</Sq><span>{t}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {day.ablauf.length>0 && (
+                          <div>
+                            <div className="inline-block px-1.5 py-0.5 mb-2 text-xs font-black uppercase" style={{ background:BLK, color:'#fff' }}>Tagesablauf</div>
+                            <div className="space-y-2.5">
+                              {day.ablauf.map((r,i) => (
+                                <div key={i} className="flex gap-2">
+                                  <span className="text-xs font-bold w-24 shrink-0 pt-0.5" style={{ color:BLU }}>{r[0]}</span>
+                                  <div className="flex-1">
+                                    <div className="text-sm" style={{ color:BLK }}>{r[1]}</div>
+                                    {r[3] && <div className="text-xs mt-0.5 px-1.5 py-0.5 inline-block" style={{ background:YEL, color:BLK, border:`1px solid ${BLK}` }}>👶 {r[3]}</div>}
+                                  </div>
+                                  <span className="text-xs font-medium shrink-0 pt-0.5" style={{ color:BLK, opacity:.5 }}>{r[2]}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {day.info && day.info.length>0 && (
+                          <div className="space-y-1.5">
+                            {day.info.map((tip,i) => <div key={i} className="text-xs font-medium px-2 py-1.5" style={{ background:'#fff', color:BLK, border:`1.5px solid ${BLK}` }}>{tip}</div>)}
+                          </div>
+                        )}
+
+                        {day.foodtours && (
+                          <div>
+                            <div className="inline-block px-1.5 py-0.5 mb-2 text-xs font-black uppercase" style={{ background:RED, color:'#fff' }}>Food Tour Optionen</div>
+                            {day.foodtours.map((f,i) => (
+                              <div key={i} className="mb-1.5 p-2.5" style={{ background:YEL, border:`2px solid ${BLK}` }}>
+                                <div className="text-xs font-black uppercase" style={{ color:BLK }}>{f.name}</div>
+                                <div className="text-xs mt-0.5" style={{ color:BLK }}>{f.detail}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {day.ryokans && (
+                          <div>
+                            <div className="inline-block px-1.5 py-0.5 mb-2 text-xs font-black uppercase" style={{ background:'#3D7A3D', color:'#fff' }}>Ryokan Gora</div>
+                            {day.ryokans.map((r,i) => (
+                              <div key={i} className="mb-1.5 p-2.5" style={{ background:'#fff', border:`2px solid ${BLK}` }}>
+                                <div className="text-xs font-black uppercase" style={{ color:BLK }}>{r.name}</div>
+                                <div className="text-xs mt-0.5" style={{ color:BLK }}>🚶 {r.anreise}</div>
+                                <div className="text-xs" style={{ color:BLK }}>👶 {r.baby}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── HOTELS ── */}
+        {tab === "hotels" && (
+          <div>
+            <div className="inline-block px-2 py-1 mb-3 text-xs font-black uppercase tracking-wide" style={{ background:BLK, color:PAPER }}>Buchungsstatus</div>
+            <div className="space-y-3 mb-4">
+              {HOTELS.map((h,i) => {
+                const bc = { ok:'#3D7A3D', warn:YEL, error:RED, todo:'#fff', info:BLU }[h.b];
+                return (
+                  <div key={i} className="p-3" style={{ background:PAPER, border:`2px solid ${BLK}`, ...HARDSM }}>
+                    <div className="flex justify-between items-start gap-2 flex-wrap">
+                      <div className="font-black uppercase text-sm" style={{ color:BLK }}>{h.s}</div>
+                      <span className="text-xs font-black uppercase px-1.5 py-0.5" style={{ background:bc, color:fgOn(bc), border:`1.5px solid ${BLK}` }}>{h.st}</span>
+                    </div>
+                    <div className="text-xs mt-1" style={{ color:BLK }}>{h.n}</div>
+                    <div className="flex flex-wrap gap-3 mt-2 text-xs font-bold" style={{ color:BLK }}>
+                      <span>📅 {h.d}</span><span>🌙 {h.nt} Nächte</span><span>💰 {h.k}</span>
+                    </div>
+                    <div className="flex gap-3 mt-1 text-xs" style={{ color:BLK, opacity:.7 }}>
+                      <span>⏰ {h.sto}</span><span>👶 {h.bb}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="p-3" style={{ background:BLU, color:'#fff', border:`2px solid ${BLK}`, ...HARDSM }}>
+              <div className="font-black uppercase text-xs mb-1">💡 Strategie (Empfehlung Isabelle Friedrichs)</div>
+              <div className="text-xs">Airbnb mit Küche + separatem Schlafzimmer: Baby abends rein, ihr bleibt auf. Gab es überall auf Booking für gute Preise. Viel Platz zum Krabbeln wichtig!</div>
+            </div>
+          </div>
+        )}
+
+        {/* ── TODOS ── */}
+        {tab === "todos" && (
+          <div className="space-y-4">
+            {[
+              {key:"kritisch",lb:"Kritisch",c:RED},
+              {key:"wichtig",lb:"Wichtig",c:BLU},
+              {key:"empfohlen",lb:"Empfohlen",c:YEL},
+              {key:"besprechen",lb:"Zu besprechen",c:BLK},
+            ].map(sec => (
+              <div key={sec.key} style={{ background:PAPER, border:`2px solid ${BLK}`, ...HARDSM }}>
+                <div className="px-3 py-1.5 text-sm font-black uppercase" style={{ background:sec.c, color:fgOn(sec.c) }}>{sec.lb}</div>
+                <div className="p-3 space-y-2">
+                  {TODOS[sec.key].map((item,i) => (
+                    <div key={i} className="flex gap-2 items-start">
+                      <span className="font-black shrink-0" style={{ color:sec.c===YEL?BLK:sec.c }}>☐</span>
+                      <div className="text-xs" style={{ color:BLK }}>
+                        {item.t}
+                        {item.f && <span className="ml-1 font-black uppercase px-1 py-0.5" style={{ background:RED, color:'#fff' }}>{item.f}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(JapanReise));
+</script>
+</body>
+</html>
