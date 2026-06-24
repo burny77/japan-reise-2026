@@ -45,195 +45,404 @@ function MapView({center,zoom,stops,height="200px"}){
     mapRef.current=map;
     return()=>{if(mapRef.current){mapRef.current.remove();mapRef.current=null;}};
   },[rdy]);
-  if(!rdy)return <div style={{height,borderRadius:'0'}} className="bg-zinc-100 flex items-center justify-center text-xs text-zinc-400">Karte laedt...</div>;
+  if(!rdy)return <div style={{height}} className="bg-zinc-100 flex items-center justify-center text-xs text-zinc-400">Karte laedt...</div>;
   return <div ref={ref} style={{height,width:'100%',overflow:'hidden',zIndex:0}} />;
 }
 
 const OVERVIEW={c:[35.2,137.6],z:6,s:[
-  {n:"Tokyo (5N)",c:[35.676,139.650]},{n:"Kamakura (Tagesausflug)",c:[35.319,139.546]},
-  {n:"Hakone/Gora (3N)",c:[35.241,139.027]},{n:"Atami (Tagesausflug)",c:[35.097,139.071]},
-  {n:"Kyoto (5N)",c:[35.012,135.768]},{n:"Nara (Tagesausflug)",c:[34.689,135.839]},
-  {n:"Osaka (4N)",c:[34.694,135.502]},{n:"Tokyo Rueckkehr (2N)",c:[35.690,139.700]},
+  {n:"Tokyo (Basis, 5N)",c:[35.676,139.650]},
+  {n:"Kamakura (Tagesausflug)",c:[35.319,139.546]},
+  {n:"Hakone/Gora (3N)",c:[35.241,139.027]},
+  {n:"Atami (Tagesausflug)",c:[35.097,139.071]},
+  {n:"Osaka (4N)",c:[34.694,135.502]},
+  {n:"Kyoto (5N)",c:[35.012,135.768]},
+  {n:"Tokyo Rueckkehr (2N)",c:[35.690,139.700]},
 ]};
 
 const DM={
-  1:{c:[35.61,139.75],z:11,s:[{n:"Haneda Airport",c:[35.549,139.780]},{n:"Comfort Hotel ERA",c:[35.691,139.780]}]},
-  2:{c:[35.71,139.79],z:14,s:[{n:"Hotel ERA",c:[35.691,139.780]},{n:"Senso-ji Tempel",c:[35.715,139.797]},{n:"Nakamise Strasse",c:[35.712,139.796]},{n:"Sumida River Walk",c:[35.700,139.800]}]},
-  3:{c:[35.681,139.697],z:13,s:[{n:"Map Camera",c:[35.694,139.703]},{n:"Meiji-Schrein",c:[35.676,139.699]},{n:"Yoyogi Park",c:[35.671,139.696]},{n:"Harajuku Omotesando",c:[35.665,139.712]}]},
-  4:{c:[35.670,139.750],z:13,s:[{n:"Tsukiji Outer Market",c:[35.665,139.770]},{n:"Hamarikyu Gardens",c:[35.660,139.763]},{n:"Tokyo Tower",c:[35.659,139.745]}]},
-  5:{c:[35.670,139.765],z:13,s:[{n:"Hamarikyu Gardens",c:[35.660,139.763]},{n:"Ginza-Spaziergang",c:[35.671,139.765]},{n:"Hotel ERA",c:[35.691,139.780]}]},
-  6:{c:[35.320,139.545],z:13,s:[{n:"Kamakura Station",c:[35.319,139.550]},{n:"Grosser Buddha",c:[35.317,139.535]},{n:"Yuigahama Strand",c:[35.300,139.550]}]},
-  7:{c:[35.45,139.25],z:10,s:[{n:"Shinjuku",c:[35.690,139.700]},{n:"Hakone-Yumoto",c:[35.250,139.077]},{n:"Ryokan Gora",c:[35.241,139.027]}]},
-  8:{c:[35.22,139.03],z:12,s:[{n:"Hakone-Schrein (Torii)",c:[35.200,139.031]},{n:"Owakudani Vulkan",c:[35.264,139.025]},{n:"Togendai Piratenschiff",c:[35.232,139.013]},{n:"Hakone-Machi",c:[35.196,139.022]}]},
-  9:{c:[35.17,139.06],z:12,s:[{n:"Gora (Start)",c:[35.241,139.027]},{n:"Atami Station",c:[35.097,139.071]},{n:"Atami Sun Beach",c:[35.093,139.082]},{n:"MOA Museum",c:[35.105,139.075]}]},
-  10:{c:[35.20,137.50],z:7,s:[{n:"Hakone-Yumoto",c:[35.250,139.077]},{n:"Odawara",c:[35.256,139.155]},{n:"Rihga Royal Kyoto",c:[34.994,135.755]}]},
-  11:{c:[34.99,135.77],z:14,s:[{n:"Rihga Royal Hotel",c:[34.994,135.755]},{n:"Fushimi Inari Taisha",c:[34.967,135.773]}]},
-  12:{c:[34.69,135.84],z:14,s:[{n:"Nara Station",c:[34.686,135.833]},{n:"Nara Park (Rehe)",c:[34.689,135.839]},{n:"Todai-ji Grosser Buddha",c:[34.688,135.839]},{n:"Kasuga Taisha",c:[34.681,135.848]}]},
-  13:{c:[35.016,135.673],z:15,s:[{n:"Sagano Bambuswald",c:[35.016,135.671]},{n:"Tenryu-ji Tempel",c:[35.017,135.676]},{n:"Yudofu Restaurant",c:[35.015,135.676]}]},
-  14:{c:[35.005,135.766],z:15,s:[{n:"Nishiki Market",c:[35.005,135.766]},{n:"Kinkaku-ji oder Kiyomizu",c:[35.039,135.729]},{n:"Kaiseki Restaurant",c:[35.010,135.760]}]},
-  15:{c:[34.85,135.66],z:9,s:[{n:"Kyoto Station",c:[34.986,135.759]},{n:"Royal Park Canvas Osaka",c:[34.705,135.496]}]},
-  16:{c:[34.670,135.503],z:15,s:[{n:"Dotonbori",c:[34.668,135.502]},{n:"Kuromon Ichiba",c:[34.666,135.506]},{n:"Naniwa Camera",c:[34.672,135.501]}]},
-  17:{c:[34.77,135.48],z:12,s:[{n:"Hotel Osaka",c:[34.705,135.496]},{n:"Minoh Wasserfall",c:[34.843,135.475]},{n:"Osaka Castle Park (Alt.)",c:[34.687,135.526]}]},
-  18:{c:[34.660,135.435],z:13,s:[{n:"Aquarium Kaiyukan",c:[34.655,135.429]},{n:"Shinsekai",c:[34.652,135.506]}]},
-  19:{c:[35.30,137.40],z:8,s:[{n:"Shin-Osaka",c:[34.733,135.500]},{n:"Tokyo Station",c:[35.681,139.767]}]},
-  20:{c:[35.713,139.796],z:15,s:[{n:"Senso-ji (frueh!)",c:[35.715,139.797]},{n:"Nakamise Strasse",c:[35.712,139.796]},{n:"Sumida Park",c:[35.700,139.800]}]},
+  1:{c:[35.61,139.75],z:11,s:[{n:"Haneda Airport",c:[35.549,139.780]},{n:"ATM + SIM + Suica",c:[35.549,139.780]},{n:"Comfort Hotel ERA",c:[35.691,139.780]}]},
+  2:{c:[35.71,139.79],z:14,s:[{n:"Senso-ji Tempel",c:[35.715,139.797]},{n:"Nakamise Strasse",c:[35.712,139.796]},{n:"Asakusa Culture Center (Aussicht 8.OG)",c:[35.711,139.796]},{n:"Sumida River Walk",c:[35.700,139.800]}]},
+  3:{c:[35.681,139.697],z:13,s:[{n:"Map Camera",c:[35.694,139.703]},{n:"Meiji-Schrein (Shinto, Wald)",c:[35.676,139.699]},{n:"Yoyogi Park",c:[35.671,139.696]},{n:"Harajuku Omotesando (Luxus-Allee)",c:[35.665,139.712]},{n:"Isetan Depachika (Food-Hall UG)",c:[35.690,139.703]}]},
+  4:{c:[35.670,139.750],z:13,s:[{n:"Tsukiji Outer Market",c:[35.665,139.770]},{n:"Hamarikyu Gardens (Kaisergarten)",c:[35.660,139.763]},{n:"Tokyo Tower",c:[35.659,139.745]}]},
+  5:{c:[35.670,139.765],z:13,s:[{n:"Hamarikyu Gardens",c:[35.660,139.763]},{n:"Ginza Boulevard",c:[35.671,139.765]},{n:"Hotel ERA (Vorbereitung)",c:[35.691,139.780]}]},
+  6:{c:[35.320,139.545],z:13,s:[{n:"Kamakura Station",c:[35.319,139.550]},{n:"Kotoku-in Grosser Buddha — 300 Y",c:[35.317,139.535]},{n:"Yuigahama Strand",c:[35.300,139.550]},{n:"Tsurugaoka Hachimangu",c:[35.325,139.556]}]},
+  7:{c:[35.45,139.25],z:10,s:[{n:"Shinjuku (Romancecar)",c:[35.690,139.700]},{n:"Hakone-Yumoto",c:[35.250,139.077]},{n:"Tozan-Bahn -> Gora",c:[35.241,139.027]},{n:"Ryokan Gora",c:[35.241,139.027]}]},
+  8:{c:[35.22,139.03],z:12,s:[{n:"Hakone-Schrein (Torii im See)",c:[35.200,139.031]},{n:"Owakudani Vulkan (schwarze Eier)",c:[35.264,139.025]},{n:"Togendai (Piratenschiff Start)",c:[35.232,139.013]},{n:"Hakone-Machi (Ziel)",c:[35.196,139.022]}]},
+  9:{c:[35.17,139.06],z:12,s:[{n:"Gora (Start)",c:[35.241,139.027]},{n:"Atami Station",c:[35.097,139.071]},{n:"Atami Sun Beach",c:[35.093,139.082]},{n:"MOA Museum — 1.600 Y",c:[35.105,139.075]}]},
+  10:{c:[34.85,135.56],z:8,s:[{n:"Hakone-Yumoto (Start)",c:[35.250,139.077]},{n:"Shin-Osaka",c:[34.733,135.500]},{n:"Royal Park Canvas Osaka",c:[34.689,135.504]}]},
+  11:{c:[34.670,135.504],z:15,s:[{n:"Dotonbori (Neonlichter, Glico)",c:[34.668,135.502]},{n:"Kuromon Ichiba Market",c:[34.666,135.506]},{n:"Naniwa Camera Shinsaibashi",c:[34.672,135.501]}]},
+  12:{c:[34.690,135.518],z:14,s:[{n:"Shinsaibashi-suji (Einkaufsstrasse)",c:[34.675,135.502]},{n:"Osaka Castle Park (kostenlos)",c:[34.687,135.526]},{n:"Osaka Castle Museum — 600 Y",c:[34.687,135.526]}]},
+  13:{c:[34.707,135.494],z:14,s:[{n:"Osaka Station / Grand Front Osaka",c:[34.705,135.495]},{n:"Umeda Sky Building — 1.500 Y",c:[34.706,135.490]},{n:"Nakazakicho (Kuenstlerviertel)",c:[34.712,135.497]},{n:"HEP Five Ferris Wheel",c:[34.703,135.499]}]},
+  14:{c:[34.990,135.765],z:12,s:[{n:"Osaka Station (Abfahrt)",c:[34.702,135.496]},{n:"Kyoto Station (Ankunft)",c:[34.986,135.759]},{n:"Rihga Royal Hotel",c:[34.994,135.755]},{n:"Kamo River (Abend)",c:[35.020,135.775]}]},
+  15:{c:[34.985,135.776],z:14,s:[{n:"Fushimi Inari (frueh morgens!) — kostenlos",c:[34.967,135.773]},{n:"Sake-Brauerei Fushimi (optional)",c:[34.946,135.771]},{n:"Gion Abendspaziergang",c:[35.003,135.778]},{n:"Yasaka Pagoda",c:[34.999,135.779]}]},
+  16:{c:[35.013,135.793],z:15,s:[{n:"Philosophenweg (Kanal-Spazierweg)",c:[35.015,135.792]},{n:"Honen-in (Moos, Reetdach) — kostenlos",c:[35.019,135.797]},{n:"Eikando Tempelgarten — 600 Y",c:[35.012,135.796]},{n:"Nanzen-ji Aquädukt — kostenlos",c:[35.011,135.792]}]},
+  17:{c:[34.997,135.770],z:14,s:[{n:"Kiyomizu-dera (frueh 7 Uhr!) — 500 Y",c:[34.994,135.785]},{n:"Sannenzaka / Ninenzaka (Gassen)",c:[34.998,135.782]},{n:"Yasaka Pagoda (Fotomotiv)",c:[34.999,135.779]},{n:"Kinkaku-ji (Goldener Pavillon) — 500 Y",c:[35.039,135.729]}]},
+  18:{c:[35.010,135.774],z:13,s:[{n:"Shimogamo-Schrein + Wald",c:[35.039,135.773]},{n:"Kamo River (Abend, Demachiyanagi)",c:[35.035,135.772]},{n:"NARA OPTION: Todai-ji — 600 Y",c:[34.688,135.839]}]},
+  19:{c:[35.013,135.671],z:11,s:[{n:"Saga Toriimoto (Edo-Strasse)",c:[35.023,135.665]},{n:"Gio-ji Moosgarten — 500 Y",c:[35.022,135.661]},{n:"Otagi Nenbutsuji (1000 Statuen) — 300 Y",c:[35.028,135.658]},{n:"Bambuswald — kostenlos",c:[35.016,135.671]},{n:"Uji: Byodoin Tempel — 600 Y",c:[34.889,135.808]}]},
+  20:{c:[35.30,137.40],z:8,s:[{n:"Kyoto Station (Start Shinkansen)",c:[34.986,135.759]},{n:"Tokyo Station (Ankunft)",c:[35.681,139.767]}]},
   21:{c:[35.58,139.92],z:10,s:[{n:"Airbnb Tokyo 2",c:[35.690,139.700]},{n:"Narita Airport",c:[35.772,140.393]}]},
 };
 
 const DAYS=[
   {nr:1,datum:"Mi 2.9.",ort:"Tokio",strecke:"Haneda -> Tokio",hotel:"Comfort Hotel ERA Tokyo",
-   top3:["Ankunft Haneda 22:20 (Langstreckenflug)","Immigration & Gepaeck (Flughafen)","Taxi zum Hotel (Nacht-Transfer)"],
-   ablauf:[["22:20","Landung Haneda","--","Baby wach nach langer Reise"],["22:20-23:20","Immigration, Zoll, Gepaeck","~60 Min.","Wickelraum vorhanden"],["23:45-00:20","Taxi zum Hotel","~35 Min.","Baby kann schlafen"],["00:45+","Sofort schlafen!","--","Auch IHR habt Jetlag -- Isabelle warnt!"]],
-   info:["Taxi empfohlen: ~3.500-6.000 Yen, direkt, ruhig","SIM-Karte: 24h-Schalter im Terminal optional"]},
+   top3:["Ankunft Haneda 22:20","SIM + ATM + Suica direkt am Flughafen (~8.500 ¥ / 47 €)","Taxi zum Hotel (~4.000 ¥ / 22 €)"],
+   ablauf:[
+     ["22:20","Landung + Immigration + Gepaeck","~40 Min.","Wickelraum Terminal 2 vorhanden, auch nachts"],
+     ["23:00","ATM (7-Eleven im Terminal): 20.000 ¥ ziehen (~110 €)","10 Min.","Baby im Buggy; ATM Englisch verfuegbar"],
+     ["23:10","SIM-Karte: IIJmio-Automat — 15 GB/30 Tage ca. 3.000 ¥ (~16 €)","10 Min.","Direkt einstecken, Datennetz sofort aktiv"],
+     ["23:20","Suica-Karte: Ticketautomat — 500 ¥ Kaution + 5.000 ¥ Guthaben = 5.500 ¥ (~30 €)","10 Min.","Suica = U-Bahn, Bus, JR, Konbini, Automaten — wichtigstes Zahlungsmittel"],
+     ["23:30","Taxi zum Hotel — 3.500-6.000 ¥ (~19-33 €) je nach Stau","~30 Min.","Baby schlaeeft; Gepaeck kein Problem, Taxifahrer hilft"],
+     ["00:00","Hotel Check-in, Zimmer","~20 Min.","Babybett bestaetigt?"],
+     ["00:20+","Sofort schlafen!","--","Auch IHR habt Jetlag + Schlafmangel — Isabelle warnt: erster Tag ist hart!"],
+   ],
+   info:["Suica laesst sich am Ende der Reise an jedem Automaten zurueckgeben (500 ¥ Kaution + Restguthaben zurueck)","Asakusa Culture Center 8. OG: Kostenlos, keine Tickets, Mo-So 9-21 Uhr"]},
 
   {nr:2,datum:"Do 3.9.",ort:"Tokio",strecke:"Tokio -> Tokio",hotel:"Comfort Hotel ERA Tokyo",
-   top3:["Senso-ji Tempel (aeltester Tokio-Tempel, 645 n.Chr.)","Nakamise Strasse (histor. Einkaufsstrasse)","Sumida River Walk (Fluss-Promenade, Skytree-Blick)"],
-   ablauf:[["07:00-08:30","Ausschlafen + Fruehstueck (inkl.)","90 Min.","Baby wacht durch Jetlag frueh auf"],["09:30-11:00","Senso-ji + Kaminarimon Tor (buddh. Tempel)","90 Min.","Sehr fotogen, babytauglich"],["11:00-12:00","Nakamise Strasse (Souvenirs, Street Food)","60 Min.",""],["12:00-13:00","Sumida River Walk (Fluss-Promenade)","60 Min.","Kinderwagen ideal"],["13:00-15:00","Baby Mittagsschlaf","2 Std.","KRITISCH"],["15:00-16:30","Asakusa Culture Center (kostenloser Aussichtspunkt, 8. OG)","90 Min.","Keine Warteschlange, kostenlos"],["18:30-20:00","Dinner + Baby-Routine","90 Min.",""]],
-   info:["Option A: Nur Asakusa, sehr entspannt","Option B: + Tokyo Skytree Aussenblick (Foto, gratis)","Option C: Ueno Park (Stadtpark) + Zoo statt Asakusa"]},
+   top3:["Senso-ji Tempel (645 n.Chr., aeltester Tokio-Tempel) — kostenlos","Nakamise Strasse (histor. Einkaufsstrasse) — kostenlos","Sumida River Walk (Fluss-Promenade) — kostenlos"],
+   ablauf:[
+     ["07:00-08:30","Ausschlafen + Fruehstueck Hotel (inkl.)","90 Min.","Baby wacht durch Jetlag frueh auf — Zeit lassen"],
+     ["09:00-10:00","U-Bahn zu Asakusa (~230 ¥/Person) + Senso-ji Tempel + Kaminarimon Tor","60 Min.","BABY SCHLAEFT IM BUGGY: Transportzeit nutzen (ca. 20 Min. Fahrt)"],
+     ["10:00-11:00","Nakamise Strasse (Souvenirs, Mochi, Street Food) — kostenlos","60 Min.","Baby wach — Sinne, Duefte, Bunte Waren; gut zum Fuettern danach"],
+     ["11:00-12:00","Sumida River Walk + Asakusa Culture Center 8.OG (Aussicht) — kostenlos","60 Min.","Kinderwagen ideal am Fluss"],
+     ["12:00-13:00","Mittagessen Ramen: Nahe Hotel (kein Res. noetig) — ~1.000 ¥/Person (~5,50 €)","60 Min.","Keine Reservation noetig; Hochstuhl meist vorhanden"],
+     ["13:00-14:30","U-Bahn zurueck (230 ¥/Person) — Baby schlaeeft im Buggy (Mittagsschlaf!)","90 Min.","BABY SCHLAEFT IM BUGGY: 1-1,5 Std. Mittagsschlaf waehrend Rueckfahrt + Spaziergang"],
+     ["14:30-16:30","Eure Ruhe, Kaffee, Planning","120 Min.","Baby wach — Cafe oder Zimmer"],
+     ["18:30-20:00","Dinner: Ramen-Restaurant nahe Hotel — ~1.000-1.500 ¥/Person (~5,50-8 €)","90 Min.","Empfehlung: Einfaches Ramen-Restaurant in Higashi Kanda; keine Reservation noetig; ca. 5 Min. zu Fuss"],
+   ],
+   info:["Dinner Empfehlung: Ramen oder Tonkatsu nahe Hotel, keine Reservation noetig unter 2.000 ¥/Person","Asakusa Culture Center 8.OG: Liftfahrt, 360° Aussicht ueber Senso-ji, voellig kostenlos, keine Wartezeit"]},
 
   {nr:3,datum:"Fr 4.9.",ort:"Tokio",strecke:"Tokio -> Tokio",hotel:"Comfort Hotel ERA Tokyo",
-   top3:["Map Camera Shinjuku (6 Etagen Gebrauchtkamera-Paradies)","Meiji-Schrein + Yoyogi Park (Schrein im Urwald + Stadtpark)","Harajuku Omotesando (breite Luxus-Allee, babytauglich)"],
-   ablauf:[["07:30-08:30","Fruehstueck (inkl.)","60 Min.",""],["08:30-09:00","Baby fertig -- Reisepass einpacken!","30 Min.","Steuerfreiheit bei Map Camera"],["09:30-11:30","Map Camera Nishi-Shinjuku (6 Etagen)","2 Std.","Ruhig, klimatisiert"],["11:30-12:30","Meiji-Schrein (Shinto, riesiger Wald)","60 Min.","Ruhig, Kinderwagen ok, kostenlos"],["12:30-13:30","Yoyogi Park (Stadtpark, Grünfläche)","60 Min.","Baby kann auf Wiese krabbeln"],["13:30-14:30","Depachika Lunch Isetan (Luxus-Food-Hall UG)","60 Min.",""],["14:30-16:30","Baby Mittagsschlaf","2 Std.","KRITISCH"],["16:30-18:00","Harajuku Omotesando (Luxus-Shopping-Allee)","90 Min.","Breite Buergersteige"]],
-   info:["Map Camera: Nishi-Shinjuku 1-12-5, Steuerfreiheit mit Reisepass, 10-15% guenstiger","Meiji-Schrein: 175ha Wald mitten in Tokyo, kostenlos","Optional abends: Shibuya Sky (Aussichtsplattform) -- Tickets vorab! (Empf. Michelle)"]},
+   top3:["Map Camera Shinjuku (6 Etagen Gebrauchtkamera-Paradies — kein Eintritt)","Meiji-Schrein + Yoyogi Park (Shinto im Urwald + Stadtpark) — kostenlos","Harajuku Omotesando (1,1 km Luxus-Allee, breite Buergersteige)"],
+   ablauf:[
+     ["07:30-08:30","Fruehstueck Hotel (inkl.)","60 Min.",""],
+     ["08:30-09:00","Baby fertig — Reisepass einpacken! (Steuerfreiheit Map Camera)","30 Min.",""],
+     ["09:00-09:30","U-Bahn zu Shinjuku — ~230 ¥/Person","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Zug (ca. 20 Min.)"],
+     ["09:30-11:30","Map Camera Nishi-Shinjuku (6 Etagen Gebrauchtkameras, kein Eintritt)","2 Std.","Ruhig, klimatisiert, Baby in Trage oder Buggy; Steuerfreiheit: Reisepass vorlegen, min. 5.000 ¥ Einkauf"],
+     ["11:30-12:30","Meiji-Schrein (Shinto, 175ha Wald mitten in Tokyo) — kostenlos","60 Min.","Riesiger ruhiger Wald, Kinderwagen ok, kein Laerm"],
+     ["12:30-13:30","Yoyogi Park (Stadtpark, Wiese) — kostenlos","60 Min.","Baby kann auf Wiese krabbeln; Picknick-Option"],
+     ["13:30-14:30","Depachika Lunch: Isetan Shinjuku Untergeschoss — ~1.000-2.000 ¥/Person (~5,50-11 €)","60 Min.","BABY SCHLAEFT IM BUGGY: Rueckweg = Mittagsschlaf-Slot"],
+     ["14:30-16:30","Baby Mittagsschlaf + Eure Ruhe","120 Min.","Baby wach machen erst wenn ausgeschlafen"],
+     ["16:30-18:00","Harajuku Omotesando (1,1 km Luxus-Allee, Cafes, Boutiquen) — kostenlos","90 Min.","Breiteste Buergersteige Tokyo; Kinderwagen ideal; kein Takeshita Street (zu eng)!"],
+   ],
+   info:["Map Camera: Nishi-Shinjuku 1-12-5, 10-15% guenstiger als BIC/Yodobashi, Steuerfreiheit mit Reisepass","Depachika Isetan: Nicht ein Restaurant sondern 2-3 Untergeschosse mit Dutzenden Food-Countern, Bento, Sushi, Patisserie — kaufen und am Stehtisch essen oder mitnehmen","Harajuku Omotesando: Japans Champs-Elysees; breite Allee mit Keyaki-Baeumen; Omotesando Hills (Tadao Ando) am Ende sehenswert","Optional abends: Shibuya Sky (Aussichtsplattform 230m) — Tickets vorab! (Empfehlung Michelle) ~2.000 ¥ (~11 €)"]},
 
   {nr:4,datum:"Sa 5.9.",ort:"Tokio",strecke:"Tokio -> Tokio",hotel:"Comfort Hotel ERA Tokyo",
-   top3:["Aktivtag nach Wahl (5 Optionen)","Baby Mittagsschlaf (wichtige Pause)","Abend-Aktivitaet oder Ruhe"],
-   ablauf:[["07:00-08:30","Fruehstueck","90 Min.",""],["09:00-13:00","Hauptaktivitaet (Option A-E)","4 Std.",""],["13:00-15:00","Baby Mittagsschlaf","2 Std.","KRITISCH"],["15:00-17:30","Nachmittag oder Ruhe","2,5 Std.",""],["18:00-20:00","Dinner + Baby-Routine","2 Std.",""]],
-   info:["A: Tsukiji Outer Market (Sushi-Fruehstueck, 06:30 Aufbruch!)","B: Tokyo Skytree (634m Aussichtsturm) -- Ticket vorab!","C: Ueno Park + Nationalmuseum (Weltklasse, klimatisiert)","D: Odaiba + TeamLab Planets (digitale Kunst, drinnen) -- Ticket vorab!","E: Yanaka-Viertel (historisch-authentisches Alt-Tokyo)"]},
+   top3:["Aktivtag nach Wahl (5 Optionen)","Baby-Schlafrhythmus als Planungsgrundlage","Abend entspannt"],
+   ablauf:[
+     ["07:00-08:30","Fruehstueck","90 Min.",""],
+     ["09:00-10:00","Transport zur Aktivitaet — Baby schlaeeft im Buggy","60 Min.","BABY SCHLAEFT IM BUGGY: Transportweg = Kurzschlaf"],
+     ["10:00-13:00","Hauptaktivitaet (Option A-E)","3 Std.","Baby wach"],
+     ["13:00-14:30","Transport zurueck — Baby schlaeeft im Buggy (Mittagsschlaf)","90 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf im Buggy bei Bewegung"],
+     ["14:30-17:30","Cafe oder Zimmer-Ruhe + kleine Aktivitaet","180 Min.","Baby wach; Cafe ideal zum Fuettern/Wickeln"],
+     ["18:00-20:00","Dinner + Baby-Routine","120 Min.",""],
+   ],
+   info:["A: Tsukiji Outer Market — fruehstes Sushi-Fruehstueck Tokyo (06:30 Aufbruch!) — kostenlos + Essen ~800-1.500 ¥ (~4,50-8 €)","B: Tokyo Skytree 634m — Ticket vorab! ~3.100 ¥ (~17 €) + Asakusa Retro (alt-Tokyo Flair um Senso-ji, Rikschas, Handwerk)","C: Ueno Park + Nationalmuseum — Park kostenlos; Museum 1.000 ¥ (~5,50 €); klimatisiert, babytauglich","D: Odaiba (kuenstl. Insel, futuristisch, weitlaeufig) + TeamLab Planets (digitale Kunst, drinnen) — Ticket vorab! ~3.200 ¥ (~17,50 €); Anreise per Yurikamome-Bahn automatisch, Baby liebt Fahrt","E: Yanaka-Viertel (hist. Alt-Tokyo, enge Gassen, kleine Tempel, Handwerkslaeden) — kostenlos; sehr authentisch, wenig Touristen"]},
 
   {nr:5,datum:"So 6.9.",ort:"Tokio",strecke:"Tokio -> Tokio",hotel:"Comfort Hotel ERA Tokyo",
-   top3:["Hamarikyu Gardens (400-J. Kaisergarten am Wasser)","Ginza-Spaziergang (Nobel-Boulevard, breite Strassen)","Vorbereitung Kamakura (Routenplanung, frueh schlafen)"],
-   ablauf:[["08:00-09:00","Fruehstueck","60 Min.",""],["09:30-11:30","Hamarikyu Gardens (histor. Garten, Teehaus)","2 Std.","Ruhig, Kinderwagen ok, 300 Yen"],["11:30-12:30","Ginza-Spaziergang (Nobel-Boulevard)","60 Min.","Breite Strassen, Kinderwagen ideal"],["12:30-13:30","Mittagessen","60 Min.",""],["13:30-15:30","Baby Mittagsschlaf","2 Std.",""],["15:30-17:00","Kamakura vorbereiten: Route, Tickets","90 Min.",""],["17:00-18:30","Rucksack packen (extra Windeln!)","90 Min.",""],["18:30-20:00","Dinner frueh + Baby-Routine","90 Min.","Frueh schlafen!"]],
-   info:["JR Yokosuka Line: ~1.000 Yen/Person per Suica, ~60 Min.","Rucksack: Windeln extra, Sonnenschutz, Wasser, Babytrage","Alternative: Nakameguro Kanal-Walk + Shimokitazawa (Vintage)"]},
+   top3:["Hamarikyu Gardens (400-J. Kaisergarten am Wasser) — 300 ¥ (~1,60 €)","Ginza Boulevard (Japans Nobel-Shoppingstrasse, breite Buergersteige) — kostenlos","Vorbereitung Kamakura: Zugtickets laden, Rucksack packen"],
+   ablauf:[
+     ["08:00-09:00","Fruehstueck Hotel (inkl.)","60 Min.",""],
+     ["09:00-09:30","U-Bahn zu Shiodome/Hamarikyu — ~230 ¥/Person","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Zug"],
+     ["09:30-11:30","Hamarikyu Gardens (400-J. Kaisergarten, Teehaeuser) — 300 ¥/Person (~1,60 €)","2 Std.","Ruhig, weitlaeufig, Kinderwagen ok; Teezeremonie ~510 ¥ extra optional"],
+     ["11:30-12:30","Ginza Boulevard-Spaziergang (Luxus-Allee) — kostenlos","60 Min.","Breite Buergersteige, Kinderwagen ideal; keine Kaufpflicht"],
+     ["12:30-13:00","Mittagessen Ginza — ~1.500-2.500 ¥/Person (~8-14 €)","30 Min.",""],
+     ["13:00-14:30","U-Bahn zurueck — BABY SCHLAEFT IM BUGGY (Mittagsschlaf)","90 Min.","Mittagsschlaf-Slot!"],
+     ["14:30-17:00","Kamakura vorbereiten: 1) Suica aufladen 2) Route merken 3) Karte offline laden 4) Wetter checken 5) Rucksack packen","150 Min.","Packliste: Windeln extra, Sonnenschutz, Wasser, ggf. Badekleidung (Strand), Babytrage"],
+     ["17:00-20:00","Dinner frueh + Baby-Routine","180 Min.","Frueh schlafen — morgen frueh Aufbruch!"],
+   ],
+   info:["Kamakura Zugticket: JR Yokosuka Line ab Tokyo oder Shinjuku, ~950 ¥ (~5,20 €) einfach, per Suica; kein Vorabticket noetig","Nakameguro + Shimokitazawa (Alternative zu Ginza/Hamarikyu falls ihr lieber etwas Hipperes wollt): Nakameguro = Trendiger Kanal, Cafes, Boutiquen am Wasser; Shimokitazawa = Bohem-Viertel, Vintage-Laeden, Indie-Flair; beide kostenlos"]},
 
   {nr:6,datum:"Mo 7.9.",ort:"Kamakura",strecke:"Tokio -> Tokio",hotel:"Comfort Hotel ERA Tokyo",
-   top3:["Grosser Buddha Kotoku-in (13m Bronze, 1252, UNESCO)","Yuigahama Strand (Sandstrand, Baby im Sand)","Baby schlaeeft im Zug zurueck (Mittagsschlaf-Trick!)"],
-   ablauf:[["07:30-09:00","Fruehstueck, Baby fertig, Rucksack","90 Min.",""],["09:15-10:15","Zug -> Kamakura (JR Yokosuka, direkt)","60 Min.","Baby schlaeeft"],["10:30-11:30","Kotoku-in Grosser Buddha (13m Bronze)","60 Min.","300 Yen, Kinderwagen ok"],["11:30-12:30","Mittagessen Kamakura","60 Min.",""],["12:30-13:30","Yuigahama Strand ODER Tsurugaoka Hachimangu","60 Min.","Strand: Baby im Sand beliebt"],["13:30-15:00","Zug zurueck (Baby schlaeeft!)","60 Min.","Perfekter Mittagsschlaf-Slot!"],["15:00-17:30","Hotel, Ruhe","2,5 Std.",""],["17:30-20:00","Letzter Tokyo-Abend, Dinner","2,5 Std.","Morgen Abreise Hakone"]],
-   info:["A: Grosser Buddha + Yuigahama Strand (Foto + Natur)","B: Grosser Buddha + Tsurugaoka Hachimangu (Tempel)","C: Quick -- nur Buddha + Lunch + zurueck"]},
+   top3:["Kotoku-in Grosser Buddha (13m Bronze, 1252, UNESCO) — 300 ¥ (~1,60 €)","Yuigahama Strand (Sandstrand, Baby im Sand) — kostenlos","Baby schlaeeft im Zug zurueck (Mittagsschlaf-Trick!)"],
+   ablauf:[
+     ["07:30-09:00","Fruehstueck, Baby fertig, Rucksack (Strandkleidung!)","90 Min.",""],
+     ["09:00-09:15","Walk zu JR Tokio Station","15 Min.",""],
+     ["09:15-10:15","Zug -> Kamakura (JR Yokosuka Line, direkt) — ~950 ¥/Person (~5,20 €)","60 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf + Mittagsschlaff-Teil im Zug"],
+     ["10:30-11:30","Kotoku-in: Grosser Buddha (1252 n.Chr., 13m Bronze) — 300 ¥/Person (~1,60 €)","60 Min.","Kinderwagen bis Eingang ok; beeindruckend fuer Baby (riesiges Bild)"],
+     ["11:30-12:30","Mittagessen Kamakura (Soba, lokale Restaurants) — ~1.000-1.500 ¥/Person (~5,50-8 €)","60 Min.","Keine Reservation noetig"],
+     ["12:30-13:30","Yuigahama Strand (Sandstrand, Wellen) ODER Tsurugaoka Hachimangu (Shinto-Schrein von 1063, kostenlos)","60 Min.","Strand: Baby im Sand sehr beliebt; Hachimangu: grosse Anlage, Tauben, Kinderwagen ok"],
+     ["13:30-15:00","Zug zurueck nach Tokyo — ~950 ¥/Person","60 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf im Zug!"],
+     ["15:00-17:30","Hotel, Eure Ruhe","150 Min.",""],
+     ["17:30-20:00","Letzter Tokyo-Abend + Dinner","150 Min.","Morgen Hakone-Abreise!"],
+   ],
+   info:["Tsurugaoka Hachimangu: bedeutendster Shinto-Schrein Kamakuras (1063 gegruendet), riesige Anlage, 1,8km Prachtstrasse bis zum Meer; lohnt wenn Zeit nach Buddha; kostenlos","Kamakura Quick-Option: Nur Grosser Buddha + Lunch + Strand = 3-4 Stunden, sehr entspannt mit Baby"]},
 
   {nr:7,datum:"Di 8.9.",ort:"Hakone",strecke:"Tokio -> Hakone",hotel:"Ryokan Gora (TBD)",
-   top3:["Odakyu Romancecar (Panorama-Luxuszug nach Hakone)","Hakone-Tozan-Bahn (1919, 3 Spitzkehren, Bergbahn)","Kaiseki-Dinner + Onsen Nacht 1 (10-Gang Japan. Gourmet)"],
-   ablauf:[["07:00-08:00","Fruehstueck Hotel","60 Min.","Letztes ERA Fruehstueck"],["08:00-09:00","Checkout, Gepaeck","60 Min.","Koffer per Takkyubin vorausgeschickt"],["10:00-11:20","Romancecar Shinjuku -> Hakone-Yumoto","80 Min.","Breite Sitze, Panorama; Baby schlaeeft"],["11:20-12:00","Yumoto: Pause, Onsen Manju probieren","40 Min.","Wickelraum am Bahnhof"],["12:00-12:40","Tozan-Bahn -> Gora (3 Spitzkehren!)","40 Min.","Japans aelteste Bergbahn"],["15:00-16:30","Check-in + Baby Mittagsschlaf","90 Min.","Futon bodennah -- ideal"],["16:30-17:30","Erste Onsen-Session (privat)","60 Min.","Eignung fuer Baby vorher klaeren!"],["17:30-19:00","Kaiseki-Dinner Nacht 1 (17:30 Slot!)","90 Min.","Allergien angemeldet?"]],
-   info:["Romancecar: vorab buchen! ~1.800 Yen/Person (Odakyu Website)","Hakone Freepass 3-Tage: ~5.600 Yen digital kaufen","Gepaeck Takkyubin vorausschicken: ~1.500-2.000 Yen/Koffer"],
-   ryokans:[{name:"Yunosumika (Nr. 1)",anreise:"Kabelbahn -> Naka-Gora, 5 Min.",baby:"Babybett, Spielzeug, Baby-Menu"},{name:"Toki no Yu Setsugetsuka",anreise:"Direkt Gora Station",baby:"Familienzimmer, privates Onsen"},{name:"Ajisai Onsen",anreise:"~15-20 Min. Fussweg oder Taxi",baby:"3 private Onsen, Spielzeug, 32m2"}]},
+   top3:["Odakyu Romancecar (Panorama-Luxuszug) — ~800 ¥ Aufpreis (~4,50 €) + Grundticket","Hakone-Tozan-Bahn (1919, 3 Spitzkehren, Japans aelteste Bergbahn)","Kaiseki-Dinner + Onsen Nacht 1 (im Ryokanpreis enthalten!)"],
+   ablauf:[
+     ["07:00-08:00","Fruehstueck Hotel (letztes ERA Fruehstueck)","60 Min.","Gepaeck per Takkyubin vorausgeschickt (1.500-2.000 ¥/Koffer, ~8-11 €)"],
+     ["08:00-09:00","Checkout, Handgepaeck + Baby-Rucksack","60 Min.","Hauptkoffer bereits im Ryokan — nur Handgepaeck im Zug"],
+     ["09:00-09:30","U-Bahn Shinjuku — 230 ¥/Person","30 Min.","BABY SCHLAEFT IM BUGGY"],
+     ["10:00-11:20","Odakyu Romancecar Shinjuku -> Hakone-Yumoto (Panorama-Luxuszug) — ~1.400 ¥/Person total (~7,50 €)","80 Min.","Breite Sitze, Riesenfenster; Baby schlaeeft meist"],
+     ["11:20-12:00","Hakone-Yumoto: Onsen Manju probieren (~150-200 ¥) + Pause","40 Min.","Wickelraum am Bahnhof"],
+     ["12:00-12:40","Tozan-Bahn -> Gora (3 Spitzkehren!) — im Hakone Freepass enthalten","40 Min.","Japans aelteste Bergbahn seit 1919; faszinierend"],
+     ["12:40-15:00","Gora Park (franz. Garten) — Eintritt 550 ¥ (~3 €) + Check-in vorbereiten","135 Min.","Check-in meist ab 15 Uhr"],
+     ["15:00-16:30","Check-in Ryokan + Baby Mittagsschlaf","90 Min.","Futon-Zimmer bodennah — ideal fuer Baby"],
+     ["16:30-17:30","Erste private Onsen-Session (im Ryokan, selbes Haus!)","60 Min.","Onsen = privater Raum im Gebaeude; kein Kommen-Gehen; Eignung fuer Baby vorher klaeren"],
+     ["17:30-19:00","Kaiseki-Dinner Nacht 1 (17:30 Slot, 8-12 Gaenge, im Preis enthalten!)","90 Min.","Kein extra Buchen; bei Check-in Uhrzeit + Allergien angeben; Baby im Zimmer oder Hochstuhl"],
+   ],
+   info:["Romancecar = Odakyu-Luxuszug, kein Umsteigen, reservierungspflichtig, vorab auf odakyu.jp buchen; Gesamtticket inkl. Aufpreis ~1.400 ¥/Person","Hakone Freepass 3-Tage: ~5.600 ¥ (~30 €) pro Person, deckt Tozan-Bahn, Seilbahn, Piratenschiff, Bus ab — lohnt sich","Onsen im Ryokan = privater Baderaum im selben Haus — ihr reserviert einen Slot, keine Fremden, kein Umziehen und Rausgehen noetig","Kaiseki-Dinner: Meistens 8-12 Gaenge traditionelles japanisches Abendessen, im Zimmer oder kleinem Privatraum serviert, keine extra Buchung noetig"],
+   ryokans:[{name:"Yunosumika (Nr. 1)",anreise:"Kabelbahn Gora -> Naka-Gora, 5 Min. Fussweg",baby:"Babybett-Verleih, Spielzeug, Baby-Menu auf Anfrage"},{name:"Toki no Yu Setsugetsuka",anreise:"Direkt gegenueber Gora Station",baby:"Familienzimmer bis 4 Pers., privates Onsen"},{name:"Ajisai Onsen Ryokan",anreise:"~15-20 Min. Fussweg oder Taxi",baby:"3 private Onsen-Raeume buchbar, Spielzeug, 32m2 Familienstudio"}]},
 
   {nr:8,datum:"Mi 9.9.",ort:"Hakone",strecke:"Hakone -> Hakone",hotel:"Ryokan Gora (TBD)",
-   top3:["Hakone-Schrein VOR 8 Uhr (Torii-Tor im See, Foto-Ikone)","Owakudani Vulkan + schwarze Eier (Schwefellandschaft)","Piratenschiff Lake Ashi (Seenkreuzfahrt, Fuji-Blick)"],
-   ablauf:[["06:30-07:00","Hakone-Schrein VOR 8 Uhr!","30-45 Min.","Ab Vormittag 2-3 Std. Wartezeit"],["07:00-07:30","Fruehstueck Ryokan","30 Min.",""],["08:45-09:15","Kabelbahn Gora -> Sounzan","30 Min.","Im Freepass"],["09:15-10:30","Seilbahn -> Owakudani (schwarze Eier)","75 Min.","Schwefelgeruch -- kurz halten!"],["10:30-12:30","Seilbahn -> Togendai + Piratenschiff","120 Min.","Baby liebt Schiff, schlaeeft oft ein"],["14:00-16:00","Baby Mittagsschlaf Ryokan","2 Std.","KRITISCH"],["16:00-17:30","Ruhe + 2. Onsen-Session","90 Min.",""],["17:30-19:00","Kaiseki-Dinner Nacht 2","90 Min.",""]],
-   info:["Mittwoch ideal -- Seilbahn am Wochenende = 1,5-2 Std. Wartezeit!","Alte Tokaido-Strasse (opt.): Babytrage statt Kinderwagen (Steinweg)","Open-Air-Museum (opt.): eigenes Handtuch fuer Fussbad mitbringen!"]},
+   top3:["Hakone-Schrein VOR 8 Uhr (Torii-Tor im See, ab 9 Uhr 2-3 Std. Wartezeit!) — kostenlos","Owakudani Vulkan + schwarze Eier (Kuro-Tamago) — im Freepass; Eier ~500 ¥/5 Stueck","Piratenschiff Lake Ashi (45 Min. Kreuzfahrt) — im Freepass enthalten"],
+   ablauf:[
+     ["06:30-07:00","Hakone-Schrein VOR 8 Uhr (Torii-Tor im See) — kostenlos","30-45 Min.","Ab Vormittag 2-3 Std. Wartezeiten; frueh = perfekte Fotos, fast allein"],
+     ["07:00-07:30","Fruehstueck Ryokan (traditionell, im Preis enthalten)","30 Min.",""],
+     ["09:00-09:30","Baby fertig, Rucksack (Babytrage fuer Tokaido!)","30 Min.",""],
+     ["09:00-09:30","Bus Gora -> Hakone-Yumoto — im Freepass","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Bus"],
+     ["09:30-10:00","Kabelbahn Gora -> Sounzan — im Freepass","30 Min.",""],
+     ["10:00-10:45","Seilbahn Sounzan -> Owakudani — im Freepass","45 Min.","Tolle Aussicht"],
+     ["10:45-11:30","Owakudani Vulkan: Schwefelkrater + schwarze Eier (~500 ¥ fuer 5 Stueck)","45 Min.","Schwefelgeruch intensiv — kurz halten; Eier heiss, abkuehlen lassen!"],
+     ["11:30-12:15","Seilbahn Owakudani -> Togendai (Lake Ashi) — im Freepass","45 Min.",""],
+     ["12:15-12:45","Mittagspause Togendai + Baby fuettern","30 Min.","Vor Schiff-Fahrt fuettern"],
+     ["12:45-13:30","Piratenschiff Togendai -> Hakone-machi (45 Min.) — im Freepass","45 Min.","Baby liebt Schiff — schaukelt sanft, schlaeeft oft ein"],
+     ["13:30-14:30","Bus zurueck Gora — im Freepass","60 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf im Bus"],
+     ["14:30-16:00","Baby Mittagsschlaf Ryokan (falls nicht im Bus)","90 Min.",""],
+     ["16:00-17:30","Ruhe + 2. Onsen-Session","90 Min.",""],
+     ["17:30-19:00","Kaiseki-Dinner Nacht 2 (im Ryokanpreis enthalten — kein extra Buchen)","90 Min.","Einfach Uhrzeit bei Check-in angeben"],
+   ],
+   info:["Mittwoch ideal: Seilbahn am WE = 1,5-2 Std. Wartezeit; wochentags fast keine","Alte Tokaido-Strasse (optional): ~1 Std. hist. Zedernweg; unbefestigter Steinweg -> Babytrage statt Buggy","Open-Air-Museum Hakone (optional auf Rueckweg): Skulpturen, Kletterbereiche fuer Kinder, Fussbad 1.600 ¥ (~8,70 €) — eigenes Handtuch mitbringen!"]},
 
   {nr:9,datum:"Do 10.9.",ort:"Hakone",strecke:"Hakone -> Hakone",hotel:"Ryokan Gora (TBD)",
-   top3:["Atami Tagesausflug (Onsen-Kuestenstadt, 14 Min. Shinkansen)","Atami Sun Beach (Sandstrand, Meeresluft)","MOA Museum of Art (Weltklasse-Kunst, Panorama-Aussicht)"],
-   ablauf:[["07:30-08:30","Fruehstueck Ryokan (letzter Morgen!)","60 Min.",""],["09:00-09:45","Tozan-Bahn -> Yumoto -> Odawara JR","45 Min.",""],["09:45-10:00","JR Odawara -> Atami (14 Min.)","14 Min.","~660 Yen; nicht im Freepass"],["10:00-11:30","Atami Sun Beach + Kuestenspaziergang","90 Min.","Baby mag Meeresluft; Kinderwagen ok"],["11:30-13:00","MOA Museum of Art (Panorama-Aussicht!)","90 Min.","Spektakulaer, klimatisiert"],["13:00-14:00","Mittagessen Atami (frische Meeresfruechte)","60 Min.",""],["14:00-15:00","Rueckfahrt (Baby schlaeeft im Zug)","60 Min.",""],["16:30-17:30","Letzte Onsen-Session","60 Min.",""],["17:30-19:00","Kaiseki-Dinner Nacht 3 (letzter Abend!)","90 Min.",""]],
-   info:["Alternative: Hakone Open-Air-Museum (Tozan-Bahn, Kletterbereiche, Fussbad)","Atami = klassische Onsen-Kuestenstadt, 14 Min. ab Odawara"]},
+   top3:["Atami Tagesausflug (Onsen-Kuestenstadt, 14 Min. ab Odawara) — JR ~660 ¥/Person (~3,60 €)","Atami Sun Beach (Sandstrand, Meeresluft) — kostenlos","MOA Museum of Art (Weltklasse, Panoramaterrasse) — 1.600 ¥ (~8,70 €)"],
+   ablauf:[
+     ["07:30-08:30","Fruehstueck Ryokan (letzter Morgen, geniessen!)","60 Min.",""],
+     ["09:00-09:45","Tozan-Bahn Gora -> Yumoto -> JR Odawara — im Freepass + ~470 ¥","45 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Zug"],
+     ["09:45-10:00","JR Kodama Odawara -> Atami — ~660 ¥/Person (~3,60 €)","14 Min.","Nicht im Freepass — separate Suica-Zahlung"],
+     ["10:00-11:30","Atami Sun Beach + Kuestesspaziergang — kostenlos","90 Min.","Baby liebt Meeresluft; Promenade kinderwagentauglich"],
+     ["11:30-13:00","MOA Museum of Art (Weltklasse-Kunst, Panorama ueber Atami) — 1.600 ¥/Person (~8,70 €)","90 Min.","Klimatisiert, spektakulaere Aussicht; babytauglich"],
+     ["13:00-14:00","Mittagessen Atami (frische Meeresfruechte, guenstig) — ~1.500 ¥/Person (~8 €)","60 Min.",""],
+     ["14:00-15:00","Rueckfahrt Atami -> Odawara -> Gora — ~660 ¥ + Freepass","60 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf im Zug"],
+     ["15:00-17:00","Baby Mittagsschlaf Ryokan","120 Min.",""],
+     ["16:30-17:30","Letzte Onsen-Session (Abschiedsritual)","60 Min.",""],
+     ["17:30-19:00","Kaiseki-Dinner Nacht 3 — im Preis enthalten","90 Min.","Letzter Abend im Ryokan"],
+   ],
+   info:["Alternative zu Atami: Hakone Open-Air-Museum (an Tozan-Bahn, Kletterbereiche, Fussbad) — 1.600 ¥ (~8,70 €); kein Shinkansen noetig","Atami = klassische Onsen-Kuestenstadt; entspannter als Touristenzentren; guenstige Meeresfruechte direkt am Hafen"]},
 
-  {nr:10,datum:"Fr 11.9.",ort:"Kyoto",strecke:"Hakone -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
-   top3:["Morgen-Onsen letzter Slot (Abschiedsritual)","Shinkansen Odawara -> Kyoto (Fuji-Chance rechts)","Check-in Rihga Royal (5-Sterne, sehr gutes Fruehstueck)"],
-   ablauf:[["07:00-07:30","Morgen-Onsen (letzter Slot!)","30 Min.",""],["07:30-08:30","Fruehstueck Ryokan","60 Min.","Geniessen!"],["09:00-09:45","Checkout + Tozan-Bahn -> Yumoto -> Odawara","45 Min.",""],["10:15-11:45","Shinkansen Odawara -> Kyoto (280 km/h)","~90 Min.","Fenster rechts = Fuji-Chance"],["14:00-16:00","Check-in Rihga Royal + Baby Mittagsschlaf","2 Std.","Babybett bestaetigt?"],["16:00-18:00","Kyoto Bahnhof-Gegend erkunden","2 Std.","11. OG kostenlose Aussicht"]],
-   info:[]},
+  {nr:10,datum:"Fr 11.9.",ort:"Osaka",strecke:"Hakone -> Osaka",hotel:"Royal Park Canvas Osaka",
+   top3:["Morgen-Onsen letzter Slot (Ryokan-Abschiedsritual)","Shinkansen nach Osaka — ~8.500 ¥/Person (~46 €) Odawara -> Shin-Osaka","Abend: Erste Osaka-Eindruecke Hotelnaehe"],
+   ablauf:[
+     ["07:00-07:30","Morgen-Onsen letzter Slot — im Preis","30 Min.",""],
+     ["07:30-08:30","Fruehstueck Ryokan (letztes Mal, geniessen!)","60 Min.",""],
+     ["09:00-09:45","Checkout + Tozan-Bahn Gora -> Yumoto -> Odawara","45 Min.","Hauptgepaeck wartet in Osaka (vorausgeschickt) — oder jetzt per Takkyubin"],
+     ["10:15-12:30","Shinkansen Odawara -> Shin-Osaka (ca. 2 Std. 15 Min.) — ~8.500 ¥/Person (~46 €)","135 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf im Shinkansen; Fensterplatz rechts fuer Fuji-Chance"],
+     ["13:00-14:00","Ankuft Shin-Osaka, U-Bahn zum Hotel (~270 ¥)","60 Min.",""],
+     ["14:00-16:00","Check-in Royal Park Canvas + Baby Mittagsschlaf (falls noch noetig)","120 Min.","Babybett bestaetigt?"],
+     ["16:00-18:00","Hotelumgebung erkunden: Shinsaibashi-suji beginnt 5 Min. zu Fuss — kostenlos","120 Min.","Erste Eindruecke Osaka; kein Programm-Stress"],
+     ["18:00-20:00","Dinner in der Naehe — Osaka-Einstieg: Okonomiyaki oder Kushikatsu ~1.500-2.500 ¥/Person","120 Min.",""],
+   ],
+   info:["Osaka = Foodie-Hauptstadt Japans; Stimmung lauter und entspannter als Tokyo","Hotelnaehe: Honmachi/Fushimachi — zentraler als es klingt; 15 Min. Fussweg zu Dotonbori, 15 Min. zu Umeda"]},
 
-  {nr:11,datum:"Sa 12.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
-   top3:["Fushimi Inari Taisha (1000 rote Torii-Tore im Bergwald)","Sake-Brauerei Fushimi (optional, histor. Brauviertel)","Rihga Royal Fruehstueck (sehr gutes Buffet, inkl.)"],
-   ablauf:[["08:00-09:00","Rihga Royal Fruehstueck (Buffet, sehr gut)","60 Min.",""],["09:30-10:00","JR Nara Line -> Inari Station (1 Stop)","30 Min.",""],["10:00-12:00","Fushimi Inari Taisha (1000 Torii-Tore)","2 Std.","Hauptweg: Kinderwagen ok; Oben: Babytrage"],["13:00-15:00","Baby Mittagsschlaf","2 Std.",""],["15:00-16:30","Sake-Brauerei Tour Fushimi (optional)","90 Min.",""]],
-   info:[]},
+  {nr:11,datum:"Sa 12.9.",ort:"Osaka",strecke:"Osaka -> Osaka",hotel:"Royal Park Canvas Osaka",
+   top3:["Dotonbori (Osaks Neon-Herz, Glico-Mann, Kanal) — kostenlos + Street Food ~500-1.500 ¥","Kuromon Ichiba Market (130 Staende, 150 J. alt, Meeresfruechte direkt essen) — kostenlos","Naniwa Camera Shinsaibashi (Gebrauchtkameras) — 5 Min. von Dotonbori"],
+   ablauf:[
+     ["08:00-09:00","Fruehstueck Hotel (inkl.)","60 Min.",""],
+     ["09:00-09:30","U-Bahn zu Namba (~230 ¥/Person)","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Zug"],
+     ["09:30-11:30","Dotonbori: Glico-Mann, Kanal-Spaziergang, Street Food kosten — kostenlos","120 Min.","Takoyaki ~500 ¥, Okonomiyaki ~800 ¥, Kushikatsu ~600 ¥; Baby wach — Leuchtreklamen, Geraeusche"],
+     ["11:30-12:30","Kuromon Ichiba Market (130 Staende) — kostenlos, direkt essen ~1.000-2.000 ¥","60 Min.",""],
+     ["12:30-13:00","Mittagessen (Restaurant nahe Markt) — ~1.500 ¥/Person","30 Min.",""],
+     ["13:00-14:30","U-Bahn zurueck — BABY SCHLAEFT IM BUGGY (Mittagsschlaf)","90 Min.",""],
+     ["14:30-16:30","Baby Mittagsschlaf + Eure Ruhe","120 Min.","Baby wach: Café oder Hotelnaehe"],
+     ["16:30-17:30","Naniwa Camera Shinsaibashi (Gebrauchtkameras, 5 Min. von Dotonbori) — kein Eintritt","60 Min.","Voigtlaender, Contax, Fuji; Reisepass fuer 10% Steuerrabatt mitbringen"],
+     ["18:30-20:00","Dinner: Kushikatsu-Spezialitaeten-Restaurant — ~2.000-3.000 ¥/Person (~11-16 €)","90 Min.",""],
+   ],
+   info:["Dotonbori = Sueden Osakas (Namba-Gegend); Street Food direkt auf der Strasse essen ist hier normal","Kuromon Ichiba: Tintenfisch, Jakobsmuscheln, Sushi, Obst direkt kaufen und vor Ort essen; sehr guenstig","Naniwa Camera Shinsaibashi: beste Gebrauchtkamera-Adresse Kansais; Voigtlaender und Contax C/Y guenstig"]},
 
-  {nr:12,datum:"So 13.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
-   top3:["Nara Rehe (hunderte Sika-Rehe, frei laufend)","Todai-ji Grosser Buddha (749 n.Chr., 15m Bronze)","Baby schlaeeft im Zug zurueck (Mittagsschlaf-Trick)"],
-   ablauf:[["08:00-09:00","Fruehstueck Rihga Royal","60 Min.",""],["09:30-10:15","JR oder Kintetsu -> Nara","45-60 Min.",""],["10:30-12:00","Nara Park -- Rehe, Spaziergang","90 Min.","Rehe NICHT fuettern! Baby auf Arm"],["12:00-12:45","Todai-ji Grosser Buddha (749 n.Chr.)","45 Min.","600 Yen"],["12:45-13:15","Kasuga Taisha (opt., 1000 Laternen)","30 Min.",""],["14:00-15:00","Zug zurueck (Baby schlaeeft!)","60 Min.",""],["15:00-17:00","Baby Mittagsschlaf im Hotel","2 Std.",""]],
-   info:[]},
+  {nr:12,datum:"So 13.9.",ort:"Osaka",strecke:"Osaka -> Osaka",hotel:"Royal Park Canvas Osaka",
+   top3:["Shinsaibashi-suji (Osaks laengste Einkaufsstrasse, 600m ueberdacht) — kostenlos","Osaka Castle Park (Park kostenlos; Museum optional 600 ¥)","Optional: Minoh Park Tagesausflug (Wasserfall, Bergwald) — kostenlos + ~400 ¥ Bahn"],
+   ablauf:[
+     ["08:00-09:00","Fruehstueck Hotel","60 Min.",""],
+     ["09:00-09:30","U-Bahn zu Shinsaibashi (~230 ¥)","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf"],
+     ["09:30-11:00","Shinsaibashi-suji (600m ueberdachte Einkaufsstrasse) — kostenlos","90 Min.","Wetterfest; breite Wege; Buggy ok"],
+     ["11:00-12:30","Osaka Castle Park (riesiger Park, kostenlos) + Burganlage","90 Min.","Park kostenlos; Museum 600 ¥ (~3,30 €) optional; viel Platz fuer Baby"],
+     ["12:30-13:00","Mittagessen Parknaehe — ~1.500 ¥","30 Min.",""],
+     ["13:00-14:30","U-Bahn zurueck — BABY SCHLAEFT IM BUGGY (Mittagsschlaf)","90 Min.",""],
+     ["14:30-16:30","Baby Mittagsschlaf + Ruhe","120 Min.",""],
+     ["16:30-19:00","Tenjinbashi-suji (Japans laengste Einkaufsstrasse 2,6 km, ueberdacht) — kostenlos","150 Min.","Ideal bei Regen; viel lokales Leben; Souvenirs"],
+   ],
+   info:["Option statt Castle: Minoh Park (40 Min. per Hankyu Takarazuka Line, ~400 ¥/Person) — Bergwald, Wasserfall 2,7 km, frittierte Ahornblaetter; kostenloser Park-Eintritt; mit Buggy nur Hauptweg (Wasserfall gut erreichbar)","Osaka Castle Museum 600 ¥: Innere Burg mit Aufzug, schöne Aussicht, babytauglich"]},
 
-  {nr:13,datum:"Mo 14.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
-   top3:["Arashiyama Bambuswald (dichter Bambus-Hain, UNESCO)","Yudofu Lunch (Tofu-Eintopf, Kyoto-Spezialitaet seit Jhd.)","Tenryu-ji Tempel + Zen-Garten (UNESCO-Welterbe)"],
-   ablauf:[["08:00-09:00","Fruehstueck Rihga Royal","60 Min.",""],["09:30-10:00","Randen Linie -> Arashiyama","30 Min.",""],["10:00-11:00","Sagano Bambuswald (dicht, mystisch)","60 Min.","Hauptweg gepflastert; frueh kommen!"],["11:00-12:00","Tenryu-ji + Zen-Garten (UNESCO)","60 Min.","Babytauglich"],["12:00-13:00","Yudofu Lunch (Tofu-Eintopf)","60 Min.","Ruhig, familienfreundlich"],["13:00-15:00","Baby Mittagsschlaf","2 Std.",""],["15:00-16:30","Okochi Sanso Villa (Panorama-Garten, Matcha inkl.)","90 Min.",""]],
-   info:[]},
+  {nr:13,datum:"Mo 14.9.",ort:"Osaka",strecke:"Osaka -> Osaka",hotel:"Royal Park Canvas Osaka",
+   top3:["Umeda Sky Building (Floating Garden Observatory, 173m) — 1.500 ¥ (~8,20 €)","Grand Front Osaka (moderner Bahnhof-Komplex, Shopping) — kostenlos","Nakazakicho (ruhiges Kuenstler-Viertel, Cafes, kein Touristen-Stress) — kostenlos"],
+   ablauf:[
+     ["08:00-09:00","Fruehstueck Hotel","60 Min.",""],
+     ["09:00-09:30","Fussweg zu Umeda/Osaka Station (~15 Min.) — kostenlos","30 Min.","BABY SCHLAEFT IM BUGGY: Morgenspaziergang"],
+     ["09:30-11:00","Umeda Sky Building — Floating Garden 1.500 ¥/Person (~8,20 €)","90 Min.","173m hoch; Rolltreppen durch den Wolkenkratzer; babytauglich; Kinderwagen per Fahrstuhl"],
+     ["11:00-12:30","Grand Front Osaka (Shopping, Restaurants, Buecher) — kostenlos","90 Min.","Direkt neben Osaka Station; modern; riesig; viele Sitzmoeglichkeiten"],
+     ["12:30-13:00","Mittagessen Grand Front Untergeschoss — ~1.000-2.000 ¥","30 Min.",""],
+     ["13:00-14:30","U-Bahn/Fussweg zu Nakazakicho — kostenlos (fusslaeufig von Umeda)","30 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf-Slot waehrend Fussweg"],
+     ["14:30-16:30","Nakazakicho (Kuenstler-Viertel, kleine Cafes, Vintage-Laeden) — kostenlos","120 Min.","Ruhig, kreativ, wenig Touristen; ideal fuer Baby (Cafe + Füttern/Wickeln)"],
+     ["16:30-17:00","HEP Five Ferris Wheel (optional, auf Mall-Dach) — 600 ¥/Person (~3,30 €)","30 Min.","Kleines Riesenrad auf dem Dach des HEP Five Einkaufszentrums; 5 Min. von Grand Front"],
+     ["18:00-20:00","Letzter Osaka-Abend: Abschluss-Dinner — ~2.000-3.500 ¥/Person","120 Min.",""],
+   ],
+   info:["Nakazakicho = Osaks bekanntestes Kuenstler-Viertel; Retro-Cafes in alten Machiya-Haeusern; ideal mit Baby (ruhig, Sitzmoeglichkeiten, authentisch)","Umeda Sky Building: einer der imposantesten Wolkenkratzer Japans mit begehbarer Dachkonstruktion ('Floating Garden')","HEP Five: Riesenrad auf dem Dach einer Mall; touristisch aber kurzweilig; Aussicht ueber Umeda"]},
 
-  {nr:14,datum:"Di 15.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
-   top3:["Nishiki Market (Kyotos Kueche, 400-J.-Markt, 126 Staende)","Kaiseki-Dinner JETZT RESERVIEREN! (10-Gang Haute Cuisine)","Kinkaku-ji ODER Kiyomizu-dera (nachmittags, Ikonen-Tempel)"],
-   ablauf:[["08:00-09:00","Fruehstueck Rihga Royal (letztes!)","60 Min.",""],["10:00-12:00","Nishiki Market (400-J.-Markt, Kyotos Kueche)","2 Std.","Sehr eng -> Baby im Tuch"],["12:00-13:00","Kiyamachi/Pontocho Gassen (histor., fotogen)","60 Min.",""],["13:00-15:00","Baby Mittagsschlaf","2 Std.",""],["15:00-16:30","Kinkaku-ji (Goldener Pavillon) ODER Kiyomizu-dera","90 Min.","Beide iconic"],["17:30-19:30","Kaiseki-Dinner (reserviert!, 10-Gang Menü)","2 Std.","~8.000-15.000 Yen/Person"]],
-   info:["Rihga Royal kann Restaurant empfehlen"]},
+  {nr:14,datum:"Di 15.9.",ort:"Kyoto",strecke:"Osaka -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
+   top3:["JR Osaka -> Kyoto (28 Min.) — ~580 ¥/Person (~3,20 €) per Suica","Check-in Rihga Royal (5-Sterne, sehr gutes inkl. Fruehstueck)","Kamo River Abend (Fluss-Promenade, Einheimische Atmosphaere) — kostenlos"],
+   ablauf:[
+     ["08:00-09:00","Fruehstueck Hotel Osaka (letztes Mal)","60 Min.",""],
+     ["09:00-09:30","Checkout, Gepaeck","30 Min.",""],
+     ["09:30-10:00","JR Osaka -> Kyoto — ~580 ¥/Person (~3,20 €)","28 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Zug"],
+     ["10:00-14:00","Check-in Rihga Royal (ab 15 Uhr, Gepaeck abgeben) + Baby Mittagsschlaf + Ruhe","240 Min.","Grosse Paelse in Kyoto erkunden oder Hotel-Cafe"],
+     ["14:00-16:30","Erste Kyoto-Erkundung: Kyoto Bahnhof (modernes Wahrzeichen, 11.OG gratis Aussicht)","150 Min.","Bahnhof selbst ist sehenswert; Glas + Stahl-Architektur"],
+     ["16:30-18:00","Kamo River Spaziergang Richtung Demachiyanagi — kostenlos","90 Min.","BABY SCHLAEFT IM BUGGY: Abendspaziergang am Fluss; Einheimische sitzen auf Flusssteg-Steinen"],
+     ["18:00-20:00","Dinner am Kamo River: Pontocho Gasse (histor. Holzgebaeude, Restaurants) — ~2.000-4.000 ¥","120 Min.","Pontocho direkt am Fluss; viele Kuechen; keine Res. noetig fuer casual Restaurants"],
+   ],
+   info:["Kamo River = Kyotos Herzader; Einheimische sitzen gleichmaessig verteilt auf den Stufen; Dango, Bier, Picknick; bester erster Eindruck Kyotos","Demachiyanagi: Ende des Flussspaziergangs; Schildkroeten-Sprungsteine zum anderen Ufer; sehr entspannte Atmosphaere"]},
 
-  {nr:15,datum:"Mi 16.9.",ort:"Osaka",strecke:"Kyoto -> Osaka",hotel:"Royal Park Canvas Osaka",
-   top3:["Checkout Kyoto, JR -> Osaka (30 Min.)","Check-in Osaka (Foodie-Hauptstadt Japans)","Abenderkundung Dotonbori-Gegend (erster Eindruck)"],
-   ablauf:[["08:00-09:00","Fruehstueck Rihga Royal (allerletzte Mal!)","60 Min.",""],["09:00-09:30","Checkout, Gepaeck","30 Min.",""],["10:00-10:30","JR Tokaido Kyoto -> Osaka (30 Min.!)","30 Min.",""],["15:00-16:00","Check-in Royal Park Canvas","60 Min.","Babybett bestaetigt?"],["18:30-20:00","Erste Osaka-Erkundung + Dinner Umeda","90 Min.",""]],
-   info:[]},
+  {nr:15,datum:"Mi 16.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
+   top3:["Fushimi Inari frueh morgens (ab 6 Uhr, vor den Touristen!) — kostenlos","Sake-Brauerei Fushimi (optional, histor. Brauviertel) — kostenlos / Verkostung ~500 ¥","Gion Abendspaziergang (histor. Maiko-Viertel, Machiya-Haeuser) — kostenlos"],
+   ablauf:[
+     ["06:00-06:30","U-Bahn Inari Station — ~230 ¥/Person","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im fruehen Zug"],
+     ["06:30-09:00","Fushimi Inari Taisha (1.000+ Torii-Tore im Bergwald) — kostenlos","150 Min.","Frueh = Nebel, Waldstiille, fast allein; Hauptweg unteres Drittel: Buggy ok; oberes Drittel: Babytrage; je hoeher desto ruhiger und magischer"],
+     ["09:00-10:00","Fruehstueck Rihga Royal (zurueck zum Hotel) — inkl.","60 Min.",""],
+     ["10:00-11:30","Sake-Brauerei Tour Fushimi (Fushimi = Kyotos Brauerei-Viertel, 30+ Brauereien) — kostenlos","90 Min.","Kanal-Spaziergang, alte Brauereien, ruhig; optional Verkostung ~500-1.500 ¥"],
+     ["11:30-13:00","Mittagessen Fushimi-Gegend — ~1.000-1.500 ¥","90 Min.",""],
+     ["13:00-14:30","U-Bahn zurueck — BABY SCHLAEFT IM BUGGY (Mittagsschlaf)","90 Min.",""],
+     ["14:30-16:30","Baby Mittagsschlaf + Ruhe","120 Min.",""],
+     ["17:00-19:00","Gion Abendspaziergang: Hanamikoji-dori, Machiya-Haeuser — kostenlos","120 Min.","Historischstes Viertel Kyotos; Abend = Maiko/Geisha ggf. sichtbar; Ladengeschaefte ab 17 Uhr"],
+     ["19:00-20:30","Dinner Gion-Gegend — ~2.000-4.000 ¥/Person","90 Min.",""],
+   ],
+   info:["Fushimi Inari: 2-3 Stunden aufwaerts gehen; nach 20-30 Min. werden die Menschenmassen merklich weniger; der echte Zauber beginnt ab dem 2. Drittel","Gion Tipp: Hanamikoji-dori (Hauptstrasse) + Shirakawa-minami-dori (Kanal, malerisch, weniger bekannt); kein Eintritt"]},
 
-  {nr:16,datum:"Do 17.9.",ort:"Osaka",strecke:"Osaka -> Osaka",hotel:"Royal Park Canvas Osaka",
-   top3:["Dotonbori (Osaks Neon-Herz, Glico-Mann, Street Food)","Kuromon Ichiba Market (trad. Markt, Meeresfruechte direkt)","Naniwa Camera Shinsaibashi (optional, Gebrauchtkameras)"],
-   ablauf:[["09:30-10:00","U-Bahn zu Namba","30 Min.",""],["10:00-12:00","Dotonbori (Neonlichter, Glico-Mann, Street Food)","2 Std.","Takoyaki, Okonomiyaki, Kushikatsu"],["12:00-13:00","Kuromon Ichiba Market (trad. Markt)","60 Min.","Frische Meeresfruechte direkt essen"],["14:00-16:00","Baby Mittagsschlaf","2 Std.",""],["16:00-17:00","Naniwa Camera Shinsaibashi (5 Min. weg!)","60 Min.","Voigtlaender, Contax, Fuji; Reisepass!"],["18:30-20:00","Dinner: Kushikatsu-Restaurant","90 Min.",""]],
-   info:["Naniwa Camera: Voigtlaender, Contax, Fuji gebraucht -- 5 Min. von Dotonbori"]},
+  {nr:16,datum:"Do 17.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
+   top3:["Philosophenweg (2km Kanal-Spazierweg, Kirschbaeume) — kostenlos","Honen-in Tempel (Moos, Reetdach-Tor, Sandgaerten) — kostenlos (Geheimtipp!)","Eikando Tempelgarten (schoenster Tempelgarten Kyotos) — 600 ¥ (~3,30 €)"],
+   ablauf:[
+     ["08:00-09:00","Rihga Royal Fruehstueck (sehr gut, inkl.)","60 Min.",""],
+     ["09:00-09:30","Bus oder U-Bahn zu Nanzen-ji/Philosophenweg-Start — ~230 ¥","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Bus"],
+     ["09:30-11:00","Philosophenweg (2km Kanal-Spazierweg, kaum Touristen morgens) — kostenlos","90 Min.","Breiter Weg, Buggy ok; kleine Cafes am Weg; Kirschbaeume; sehr ruhig; Einheimische laufen hier"],
+     ["11:00-11:45","Honen-in Tempel (GEHEIMTIPP: Moos, Reetdach-Tor, Sandgaerten) — kostenlos","45 Min.","Einer der ruhigsten Tempel Kyotos; kaum bekannt bei Touristen; Kuenstler-Atmosphaere; Buggy bis Eingang"],
+     ["11:45-13:00","Eikando Tempelgarten (einer der schoensten Gaerten Kyotos) — 600 ¥/Person (~3,30 €)","75 Min.","Holzstege, Seerosenteich, im September noch gruen; sehr ruhig"],
+     ["13:00-14:00","Mittagessen Philosophenweg-Cafes — ~1.000-1.500 ¥","60 Min.","Baby wach: Cafe ideal zum Fuettern"],
+     ["14:00-15:30","BABY SCHLAEFT IM BUGGY: Rueckweg oder Bus (Mittagsschlaf)","90 Min.",""],
+     ["15:30-17:00","Nanzen-ji (Zen-Tempel, roem. Aquadukt mitten im Wald) — Anlage kostenlos; Teilbereiche 300-600 ¥","90 Min.","Aquaedukt aus Backstein mitten in Parkanlage; sehr fotogen; weitlaeufig; Buggy ok"],
+     ["17:30-19:30","Kamo River Abend: Demachiyanagi-Stege + Dango — kostenlos","120 Min.","Bester Sonnenuntergangsort Kyotos; Einheimische mit Picknick"],
+   ],
+   info:["Philosophenweg = Pflicht mit Baby: flacher Weg, gruener Kanal, kleine Cafes, wenig Gedraenge; beruehmt fuer Kirschbluete aber auch September sehr schoen","Honen-in: extrem selten in Reisefuehrern erwähnt; einer der besten Geheimtipps Kyotos; nicht verpassen!","Eikando + Nanzen-ji + Honen-in liegen alle innerhalb 15 Min. Fussweg voneinander"]},
 
-  {nr:17,datum:"Fr 18.9.",ort:"Osaka",strecke:"Osaka -> Osaka",hotel:"Royal Park Canvas Osaka",
-   top3:["Minoh Park (Wasserfall, Bergwald) ODER Osaka Castle Park","Natur-Ausgleich nach City-Tagen","Tenjinbashi-suji (Japans laengste Einkaufsstrasse, 2,6 km)"],
-   ablauf:[["08:00-09:30","Fruehstueck, Baby fertig (Regenjacke!)","90 Min.","September: Regen moeglich"],["10:30-13:00","Natur-Programm (Option A oder B)","2,5 Std.",""],["14:00-16:00","Baby Mittagsschlaf","2 Std.",""],["16:00-17:30","Tenjinbashi-suji (2,6 km Einkaufsstrasse, ueberdacht)","90 Min.","Ideal bei Regen"]],
-   info:["A: Minoh Park (Wasserfall, 40 Min. Hankyu) -- frittierte Ahornblaetter!","B: Osaka Castle Park (zentral, kostenlos, Kinderwagen ideal)"]},
+  {nr:17,datum:"Fr 18.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
+   top3:["Kiyomizu-dera ab 7 Uhr morgens (ikonisch, vor Touristen-Massen!) — 500 ¥ (~2,70 €)","Higashiyama Gassen: Sannenzaka + Ninenzaka (histor. Kopfstein) — kostenlos","Kinkaku-ji (Goldener Pavillon, 30-60 Min. reichen) — 500 ¥ (~2,70 €)"],
+   ablauf:[
+     ["06:30-07:00","Bus zu Kiyomizu-dera — ~230 ¥","30 Min.","BABY SCHLAEFT IM BUGGY: Fruehmorgens-Slot"],
+     ["07:00-08:30","Kiyomizu-dera (ikonischer Holztempel, 778 n.Chr.) — 500 ¥/Person (~2,70 €)","90 Min.","Frueh = goldenes Licht, fast allein; ab 10 Uhr Touristenmassen; Buggy bis Eingang; Treppen oben"],
+     ["08:30-09:30","Sannenzaka + Ninenzaka Gassen (histor. Kopfstein-Gassen, Laeden) — kostenlos","60 Min.","Charmant frueh morgens; Matcha-Eis-Laeden; Buggy teilweise schwierig -> Trage"],
+     ["09:30-10:00","Yasaka Pagoda (Fotomotiv Kyotos) — kostenlos (Aussenbereich)","30 Min.",""],
+     ["10:00-11:00","Fruehstueck Rihga Royal (spaeter, nach dem fruehen Start) — inkl.","60 Min.",""],
+     ["11:00-12:30","U-Bahn + Bus zu Kinkaku-ji (Goldener Pavillon, Taxifahrt ~15 Min.) — 500 ¥/Person (~2,70 €)","90 Min.","30-45 Min. besuchen reicht; sehr ikonisch aber voll; Garten schoen"],
+     ["12:30-13:00","Mittagessen Kinkaku-ji Naehe — ~1.000-1.500 ¥","30 Min.",""],
+     ["13:00-14:30","Bus/Taxi zurueck — BABY SCHLAEFT IM BUGGY (Mittagsschlaf)","90 Min.",""],
+     ["14:30-17:00","Baby Mittagsschlaf + Ruhe","150 Min.",""],
+     ["17:00-19:00","Shimogamo-Schrein + Tadasu no Mori (riesiger alter Wald mitten in Kyoto) — kostenlos","120 Min.","TIPP: einer der besten Geheimtipps Kyotos; uralter Wald, Schatten, kein Trubel; Buggy auf Waldpfad ok"],
+   ],
+   info:["Kiyomizu-dera Pflicht: ikonischste Aussicht Kyotos; mit Baby frueh morgens (7-9 Uhr) fast allein; spaeter Stunden kaum moeglich","Shimogamo-Schrein + Wald: UNESCO-Welterbe; der Wald Tadasu no Mori ist einer der wenigen alten Primärwaelder nahe eines Stadtzentrums; sehr ruhig; perfekt fuer Baby-Spaziergang"]},
 
-  {nr:18,datum:"Sa 19.9.",ort:"Osaka",strecke:"Osaka -> Osaka",hotel:"Royal Park Canvas Osaka",
-   top3:["Letzter Osaka-Tag -- Freie Wahl!","Aquarium Kaiyukan (Walhai!) ODER Shinsekai Retro-Viertel","Abschluss-Dinner Osaka (letzter grosser Abend)"],
-   ablauf:[],
-   info:["A: Osaka Aquarium Kaiyukan (Walhai!, drinnen, klimatisiert) -- ~2.300 Yen","B: Shinsekai Retro-Viertel (1920er Osaka, Tsutenkaku-Turm, Kushikatsu)","C: Nakazakicho (Kuenstler-Viertel, Cafes, ruhig, babytauglich)"]},
+  {nr:18,datum:"Sa 19.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
+   top3:["OFFEN: Nara Tagesausflug (Rehe + Buddha) — ODER Uji (Matcha + Byodoin) — ODER Ruhetag","Kamo River Picknick Nachmittag — kostenlos","Abend: Gion Gassen oder Pontocho"],
+   ablauf:[
+     ["08:00-09:00","Fruehstueck Rihga Royal","60 Min.",""],
+     ["09:00-10:00","Transport zur Wahl-Aktivitaet — BABY SCHLAEFT IM BUGGY","60 Min.",""],
+     ["10:00-13:00","Aktivitaet (Option A, B oder C)","3 Std.",""],
+     ["13:00-14:30","Rueckfahrt — BABY SCHLAEFT IM BUGGY (Mittagsschlaf)","90 Min.",""],
+     ["14:30-17:00","Baby Mittagsschlaf + Ruhe","150 Min.",""],
+     ["17:00-19:00","Kamo River Picknick: Dango + Getraenke vom Konbini — ~300-500 ¥","120 Min.","Bester Abendort Kyotos; Schildkroeten-Steine; Einheimische Atmosphaere"],
+     ["19:00-20:30","Dinner Gion oder Pontocho — ~2.000-4.000 ¥","90 Min.",""],
+   ],
+   info:["Option A: Nara (45 Min. JR ~710 ¥) — Rehe, Todai-ji Buddha 600 ¥, Kasuga Taisha — ENTSCHEIDUNG NOCH OFFEN","Option B: Uji (20 Min. Kintetsu ~310 ¥) — Byodoin Tempel 600 ¥, Matcha-Desserts, ruhiger Fluss — EMPFEHLUNG als Nara-Alternative","Option C: Ruhetag in Kyoto — Kinkaku-ji falls noch nicht gemacht; Nishiki Market (kurz, nicht als Hauptprogramm); weiterer Philosophenweg-Besuch"]},
 
-  {nr:19,datum:"So 20.9.",ort:"Tokio",strecke:"Osaka -> Tokio",hotel:"Tokio Airbnb (TBD)",
-   top3:["Checkout Osaka (letzter Osaka-Morgen!)","Shinkansen Nozomi (280 km/h, 2,5 Std., Fuji-Blick!)","Check-in Tokio Airbnb (Kueche + sep. Schlafzimmer!)"],
-   ablauf:[["07:30-08:30","Fruehstueck (letztes Osaka!)","60 Min.",""],["10:00-12:30","Shinkansen Nozomi Shin-Osaka -> Tokio","2,5 Std.","Sitzreihe D/E rechts = Fuji-Blick"],["14:00-16:00","Check-in Airbnb + Baby Mittagsschlaf","2 Std.","Kueche! Sep. Schlafzimmer!"]],
-   info:[]},
+  {nr:19,datum:"So 20.9.",ort:"Kyoto",strecke:"Kyoto -> Kyoto",hotel:"Rihga Royal Hotel Kyoto",
+   top3:["Arashiyama: Saga Toriimoto Strasse + Gio-ji Moosgarten + Otagi Nenbutsuji — Vormittag","Arashiyama: Bambuswald + Yudofu Lunch","Uji: Byodoin Tempel + Matcha — Nachmittag"],
+   ablauf:[
+     ["08:00-09:00","Rihga Royal Fruehstueck (letztes Kyoto-Fruehstueck!)","60 Min.",""],
+     ["09:00-09:30","Bus/Zug zu Arashiyama — ~230-470 ¥","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Bus"],
+     ["09:30-10:00","Saga Toriimoto Preserved Street (Edo-Holzhaeuser-Strasse) — kostenlos","30 Min.","Kaum Touristen; alte Holzhaeuser; sehr fotogen; Buggy ok auf Strasse"],
+     ["10:00-10:45","Gio-ji Tempel (GEHEIMTIPP: Moos-Garten, Maerchenwald) — 500 ¥/Person (~2,70 €)","45 Min.","Einer der schoensten kleinen Tempel Kyotos; sehr ruhig; Wege teilweise holprig -> BABYTRAGE empfohlen"],
+     ["10:45-11:30","Otagi Nenbutsuji (GEHEIMTIPP: 1.200 einzigartige Rakan-Statuen) — 300 ¥/Person (~1,60 €)","45 Min.","Jede Statue anders, manche lustig, manche meditativ; sehr kurioses Erlebnis; BABYTRAGE (Treppenstufen)"],
+     ["11:30-12:00","Sagano Bambuswald — kostenlos","30 Min.","Hauptweg Buggy ok; kurzer Besuch reicht; morgens schoenster Licht"],
+     ["12:00-13:00","Yudofu Lunch Arashiyama (Tofu-Eintopf, Kyoto-Spezialaet seit Jahrhunderten) — ~1.500-3.000 ¥/Person","60 Min.","Sagano Tourou Restaurant o.ae.; ruhig; Baby: Hochstuhl"],
+     ["13:00-14:00","JR Sagano/Sanin Line Saga-Arashiyama -> Uji — ~590 ¥/Person","60 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf im Zug!"],
+     ["14:00-15:30","Uji: Byodoin Tempel (UNESCO, 1052, Matcha-Stadt) — 600 ¥/Person (~3,30 €)","90 Min.","Ruhige Stadt; Buggy ok; sehr entspannt vs. Kyoto-Zentrum"],
+     ["15:30-16:30","Uji: Matcha-Desserts direkt aus den Laeden — ~300-800 ¥","60 Min.","Uji = Japans Matcha-Hauptstadt; Matcha-Eis, Mochi, Parfait direkt beim Erzeuger"],
+     ["16:30-17:30","Zug Uji -> Kyoto (~310 ¥)","60 Min.",""],
+     ["18:00-20:00","Letzter Kyoto-Abend: Pontocho oder Nishiki kurz + Dinner — ~2.000-4.000 ¥","120 Min.",""],
+   ],
+   info:["Gio-ji und Otagi Nenbutsuji: die besten Geheimtipps Arashiyamas; in keinem Standard-Reisefuehrer; kaum Touristen","Kombination Arashiyama (Vormittag) + Uji (Nachmittag): laeuft gut zeitlich; Gesamtbahnkosten ~1.800 ¥/Person; sehr abwechslungsreich","Bambuswald: kurzer Stop reicht (20-30 Min.); Hauptattraktion ist Menge und Enge; der echte Zauber liegt in Gio-ji und Otagi"]},
 
-  {nr:20,datum:"Mo 21.9.",ort:"Tokio",strecke:"Tokio -> Tokio",hotel:"Tokio Airbnb (TBD)",
-   top3:["Asakusa & Senso-ji FRUEH MORGENS (Empfehlung Michelle!)","Nakamise Strasse (letzte Souvenirs)","Sumida Park (Fluss-Promenade, Skytree-Blick)"],
-   ablauf:[["06:30-08:00","Asakusa + Senso-ji FRUEH (Empfehlung Michelle)","90 Min.","Kaum Touristen 6:30-8 Uhr, magisch"],["08:00-09:00","Fruehstueck in Asakusa","60 Min.",""],["09:00-11:00","Nakamise Strasse + Bummel","2 Std.","Letzte Souvenirs!"],["11:00-12:30","Sumida Park (Fluss-Promenade)","90 Min.","Kinderwagen ideal"],["14:00-16:00","Baby Mittagsschlaf","2 Std.",""]],
-   info:[]},
+  {nr:20,datum:"Mo 21.9.",ort:"Tokio",strecke:"Kyoto -> Tokio",hotel:"Tokio Airbnb (TBD)",
+   top3:["Shinkansen Kyoto -> Tokio (2 Std. 15 Min.) — ~13.400 ¥/Person (~73 €)","Check-in Tokio Airbnb (Kueche + sep. Schlafzimmer!)","Asakusa Abend oder entspannen"],
+   ablauf:[
+     ["08:00-09:00","Rihga Royal letztes Fruehstueck (inkl., sehr gut!)","60 Min.",""],
+     ["09:00-09:30","Checkout, Gepaeck","30 Min.",""],
+     ["09:30-10:00","JR oder Taxi zu Kyoto Station (~580 ¥ U-Bahn)","30 Min.",""],
+     ["10:15-12:30","Shinkansen Kyoto -> Tokio — ~13.400 ¥/Person (~73 €) pro Strecke","135 Min.","BABY SCHLAEFT IM BUGGY: Mittagsschlaf im Shinkansen; Fensterplatz rechts fuer Fuji-Blick"],
+     ["13:00-15:00","Check-in Tokio Airbnb + Baby Mittagsschlaf (falls noetig)","120 Min.","Kueche nutzen! Sep. Schlafzimmer = Baby schlafen legen, ihr bleibt auf"],
+     ["15:00-17:30","Neue Nachbarschaft erkunden","150 Min.","Entspannt; kein Programm-Druck"],
+     ["18:00-20:00","Dinner nahe Airbnb","120 Min.",""],
+   ],
+   info:["Alternativ: Frueherer Zug um 8 Uhr aus Kyoto -> mehr Zeit in Tokio; oder spaeterer Zug 11 Uhr wenn ihr Kyoto-Abschied noch geniessen wollt","Shinkansen Kyoto-Tokio: immer mit Nokkori/Hikari oder Nozomi buchbar; Sitzplatz reservierbar; Baby auf Schoß kostenlos"]},
 
   {nr:21,datum:"Di 22.9.",ort:"Tokio -> Narita",strecke:"Tokio -> Narita",hotel:"--",
-   top3:["Checkout, Gepaeck lagern (letzter Morgen)","Last-Minute Shopping (Konbini, Drogerie)","Abflug 22:20 Narita (Sayonara Japan!)"],
-   ablauf:[["09:00-10:00","Checkout, Gepaeck lagern (bis 16 Uhr)","60 Min.",""],["10:00-13:00","Letzter Bummel, Souvenirs, Konbini","3 Std.",""],["14:00-16:00","Baby Mittagsschlaf (KRITISCH -- langer Flugtag!)","2 Std.","Baby ausgeruht fuer Flug"],["17:00-18:30","Fahrt Narita","~90 Min.",""],["18:30-22:00","Narita: Check-in, Security, Duty Free","3,5 Std.",""],["22:20","Abflug Narita -> Frankfurt","--","Sayonara Japan!"]],
-   info:["Taxi Narita: ~20.000-25.000 Yen · N'EX: ~3.000 Yen/Person · Limo-Bus: ~3.200 Yen"]},
+   top3:["Asakusa & Senso-ji FRUEH (Empfehlung Michelle: vor 8 Uhr!) — kostenlos","Last-Minute Shopping: Matsumoto Kiyoshi (Drogerie), Konbini","Abflug 22:30 Narita — Taxi ~20.000-25.000 ¥ (~109-136 €)"],
+   ablauf:[
+     ["06:30-08:00","Senso-ji FRUEH (Empfehlung Michelle!) — kostenlos","90 Min.","Kaum Touristen 6:30-8 Uhr; magische Atmosphaere; perfekte Fotos"],
+     ["08:00-09:00","Fruehstueck in Asakusa (lokales Cafe) — ~800-1.200 ¥","60 Min.",""],
+     ["09:00-11:00","Nakamise Strasse (letzte Souvenirs!) — Souvenirs ab ~300 ¥","120 Min.",""],
+     ["11:00-13:00","Last-Minute Shopping: Matsumoto Kiyoshi (Kosmetik, Baby), Konbini-Snacks","120 Min.",""],
+     ["13:00-14:00","Letztes Mittagessen Japan — ~1.500 ¥","60 Min.",""],
+     ["14:00-16:00","Baby Mittagsschlaf (KRITISCH — langer Flugtag!)","120 Min.","Baby ausgeruht fuer Flug — sehr wichtig!"],
+     ["16:00-17:00","Gepaeck holen, Airbnb-Checkout, Taxi bestellen","60 Min.","Airbnb-Checkout oft 11 Uhr; Gepaeck vorher einlagern"],
+     ["17:00-18:30","Taxi Narita — ~20.000-25.000 ¥ (~109-136 €); Alternative: N'EX Bahn ~3.000 ¥ (~16 €)","90 Min.",""],
+     ["18:30-22:00","Narita: Check-in, Security, Duty Free, letztes Japan-Dinner — Duty Free guenstig fuer Whisky, Kosmetik","210 Min.",""],
+     ["22:30","Abflug Narita -> Frankfurt","--","Sayonara Japan!"],
+   ],
+   info:["N'EX (Narita Express): ~3.000 ¥/Person, 60 Min. ab Shinjuku; guenstiger als Taxi aber mit Gepaeck und Baby anstrengender","Duty Free Narita: Japanischer Whisky (Nikka, Suntory) erheblich guenstiger als in Europa; Matcha-Sets; Kosmetik"]},
 ];
 
 const HOTELS=[
   {s:"Tokio 1",n:"Comfort Hotel ERA Tokyo Higashi Kanda",d:"3.-8.9.",nt:5,k:"509 EUR",b:"warn",st:"gebucht, nicht bezahlt",sto:"bis 31.08.",bb:"anfragen"},
-  {s:"Hakone (jetzt)",n:"GuestVilla Hakone-Yumoto -- STORNIEREN!",d:"8.-10.9.",nt:2,k:"159 EUR",b:"error",st:"STORNIEREN bis 31.08.",sto:"bis 31.08.",bb:"--"},
-  {s:"Hakone (Ziel)",n:"Ryokan Gora: Yunosumika / Setsugetsuka / Ajisai",d:"8.-11.9.",nt:3,k:"~300-500 EUR",b:"todo",st:"noch buchen",sto:"--",bb:"bestaetigt"},
-  {s:"Kyoto",n:"Rihga Royal Hotel Kyoto",d:"11.-16.9.",nt:5,k:"450 EUR",b:"ok",st:"bezahlt -- Datum pruefen!",sto:"bis 05.09.",bb:"anfragen"},
-  {s:"Osaka",n:"Royal Park Canvas Osaka",d:"16.-20.9.",nt:4,k:"~350 EUR",b:"info",st:"reserviert -- Datum + Naechte anpassen!",sto:"bis 07.09.",bb:"anfragen"},
-  {s:"Tokio 2",n:"Airbnb mit Kueche + sep. Schlafzimmer (noch suchen)",d:"20.-22.9.",nt:2,k:"~90-120 EUR",b:"todo",st:"noch buchen",sto:"--",bb:"Pflicht"},
+  {s:"Hakone",n:"GuestVilla Hakone-Yumoto -- STORNIEREN! Ersetzen durch Gora-Ryokan",d:"8.-10.9.",nt:2,k:"159 EUR",b:"error",st:"STORNIEREN bis 31.08.",sto:"bis 31.08.",bb:"--"},
+  {s:"Hakone (Ziel)",n:"Ryokan Gora: Yunosumika / Setsugetsuka / Ajisai Onsen",d:"8.-11.9.",nt:3,k:"~300-500 EUR",b:"todo",st:"noch buchen!",sto:"--",bb:"bestaetigen"},
+  {s:"Osaka",n:"Royal Park Canvas Osaka",d:"11.-15.9.",nt:4,k:"~350 EUR",b:"info",st:"reserviert -- Datum auf 11.9. aendern!",sto:"bis 07.09.",bb:"anfragen"},
+  {s:"Kyoto",n:"Rihga Royal Hotel Kyoto",d:"15.-20.9.",nt:5,k:"450 EUR",b:"ok",st:"bezahlt -- Datum auf 15.9. aendern!",sto:"bis 05.09.",bb:"anfragen"},
+  {s:"Tokio 2",n:"Airbnb: Kueche + sep. Schlafzimmer (noch suchen!)",d:"20.-22.9.",nt:2,k:"~90-120 EUR",b:"todo",st:"noch buchen!",sto:"--",bb:"Pflicht"},
 ];
 
 const TODOS={
   kritisch:[
     {t:"Tokio 1 bezahlen -- Comfort Hotel 509 EUR",f:"bis 31.08."},
-    {t:"Hakone GuestVilla stornieren (voll erstattbar)",f:"bis 31.08."},
-    {t:"Hakone Gora-Ryokan buchen: 3 Naechte 8.-11.9.",f:"bald!"},
-    {t:"Kyoto Check-in auf 11.9. anpassen -- Rihga Royal",f:"bis 05.09."},
-    {t:"Osaka Check-in auf 16.9., 4 statt 5 Naechte",f:"bis 07.09."},
+    {t:"Hakone GuestVilla stornieren (voll erstattbar!)",f:"bis 31.08."},
+    {t:"Hakone Gora-Ryokan buchen (3 Naechte 8.-11.9.): Yunosumika / Setsugetsuka / Ajisai",f:"sofort"},
+    {t:"Osaka Royal Park Canvas: Check-in auf 11.9. aendern (war 16.9.)",f:"bis 07.09."},
+    {t:"Kyoto Rihga Royal: Check-in auf 15.9. aendern (war 11.9.) -- bereits bezahlt, anrufen!",f:"bis 05.09."},
   ],
   wichtig:[
-    {t:"Hakone: Ryokan auswaehlen + Onsen-Eignung fuer Baby klaeren!"},
-    {t:"Hakone: Allergien/Babybett fuer Kaiseki vorab anmelden"},
-    {t:"Tokio 2: Airbnb mit Kueche + sep. Schlafzimmer (20.-22.9.)"},
+    {t:"Hakone: Ryokan auswaehlen + Onsen-Eignung fuer 11-Monate-Baby direkt beim Haus erfragen"},
+    {t:"Hakone: Allergien + Babybett fuer Kaiseki-Dinner vorab anmelden"},
+    {t:"Tokio 2: Airbnb mit Kueche + sep. Schlafzimmer buchen (20.-22.9.)"},
     {t:"Babybett bei ALLEN Unterkuenften schriftlich bestaetigen!"},
-    {t:"Osaka Natur: Minoh Park oder Osaka Castle Park?"},
-    {t:"Strategie: Tokio 1 und Osaka auf Airbnb umstellen?"},
+    {t:"NARA-ENTSCHEIDUNG: Nara (Rehe + Buddha) vs. Uji (Matcha + Byodoin) fuer Tag 18 -- noch offen"},
+    {t:"Kyoto Details besprechen (speziell Tag 18 + Nara-Alternative)"},
   ],
   empfohlen:[
-    {t:"Romancecar reservieren: Shinjuku -> Hakone 8.9. (Odakyu Website)"},
-    {t:"Hakone Freepass 3-Tage: ~5.600 Yen digital kaufen"},
-    {t:"Kaiseki-Dinner Kyoto (Tag 14): 1-2 Tage vorher reservieren"},
-    {t:"Shibuya Sky Tickets: 2-4 Wochen vorher (Empfehlung Michelle)"},
-    {t:"Suica-Karte: bei Haneda oder vorab digital"},
-    {t:"SIM-Karte / eSIM: bei Haneda oder vorab"},
-    {t:"Reisekrankenversicherung: Baby mitversichert?"},
-    {t:"Reisepass Baby: gueltig? (Kinderreisepass seit 01.01.2024 abgeschafft!)"},
+    {t:"Romancecar reservieren: Shinjuku -> Hakone 8.9. -- odakyu.jp"},
+    {t:"Hakone Freepass 3-Tage: ~5.600 Y digital kaufen (odakyu.jp)"},
+    {t:"Kaiseki-Dinner Kyoto (Tag 19 letzter Abend falls gewuenscht): vorab reservieren"},
+    {t:"Shibuya Sky Tickets (falls gewuenscht): 2-4 Wochen vorher -- Empfehlung Michelle"},
+    {t:"SIM-Karte alternativ vorab bestellen (IIJmio online) damit am Flughafen weniger Stress"},
+    {t:"Reisekrankenversicherung: Baby explizit mitversichert?"},
+    {t:"Reisepass Baby: gueltig? Kinderreisepass seit 01.01.2024 abgeschafft!"},
   ],
   besprechen:[
-    {t:"Hakone Tag 9: Atami (Kueste) oder Open-Air-Museum?"},
-    {t:"Airbnb fuer alle Stationen: Kueche + Schlafzimmer?"},
-    {t:"Kyoto: Kinkaku-ji, Kiyomizu-dera -- welche zusaetzlich?"},
+    {t:"Nara vs. Uji: finale Entscheidung fuer Tag 18"},
+    {t:"Airbnb-Strategie: Tokio 1 auf Airbnb umstellen? (Kueche + Schlafzimmer)"},
+    {t:"Kyoto Tag 18 im Detail: was machen wir falls Nara raus?"},
     {t:"Route mit Vicky validieren"},
   ],
 };
 
 const CITY_BG={
   "Tokio":"bg-blue-700","Kamakura":"bg-violet-700","Hakone":"bg-emerald-700",
-  "Kyoto":"bg-orange-600","Osaka":"bg-red-600","Tokio -> Narita":"bg-zinc-700",
+  "Osaka":"bg-red-600","Kyoto":"bg-orange-600","Tokio -> Narita":"bg-zinc-700",
 };
 
 function Badge({label,type}){
@@ -259,7 +468,6 @@ function JapanReise(){
 
   return (
     <div className="max-w-lg mx-auto min-h-screen bg-white">
-
       <div className="bg-black text-white sticky top-0 z-20">
         <div className="px-5 py-4 border-b-4 border-red-600 flex items-end justify-between">
           <div>
@@ -283,7 +491,6 @@ function JapanReise(){
       </div>
 
       <div className="px-4 py-4">
-
         {tab==="uebersicht"&&(
           <div>
             <div className="grid grid-cols-3 border-2 border-black mb-5">
@@ -301,7 +508,7 @@ function JapanReise(){
                 {OVERVIEW.s.map((s,i)=>(
                   <div key={i} className={"flex items-center gap-2 px-3 py-2 text-xs border-b border-zinc-200"+(i%2===0?" border-r-2 border-black":"")}>
                     <span className="w-5 h-5 flex items-center justify-center text-white text-xs font-black shrink-0"
-                      style={{background:["#1D4ED8","#6D28D9","#059669","#EA580C","#1D4ED8","#DC2626","#374151","#1D4ED8"][i%8]}}>
+                      style={{background:["#1D4ED8","#6D28D9","#059669","#b45309","#DC2626","#EA580C","#374151"][i%7]}}>
                       {i+1}
                     </span>
                     <span className="font-medium text-zinc-700 truncate">{s.n}</span>
@@ -387,7 +594,7 @@ function JapanReise(){
                               {dm.s.map((s,i)=>(
                                 <div key={i} className="flex items-center gap-1.5 text-xs">
                                   <span className="w-4 h-4 flex items-center justify-center text-white text-xs font-black shrink-0"
-                                    style={{background:["#1D4ED8","#b91c1c","#b45309","#15803d","#0369a1","#7e22ce","#be185d"][i%7]}}>
+                                    style={{background:["#4338ca","#b91c1c","#b45309","#15803d","#0369a1","#7e22ce","#be185d"][i%7]}}>
                                     {i+1}
                                   </span>
                                   <span className="text-zinc-600 truncate">{s.n}</span>
@@ -411,26 +618,29 @@ function JapanReise(){
                           <div className="border-b-2 border-black">
                             <div className="bg-black text-white px-4 py-1.5 text-xs font-black uppercase tracking-widest">TAGESABLAUF</div>
                             <div className="divide-y divide-zinc-100">
-                              {day.ablauf.map((r,i)=>(
-                                <div key={i} className="flex">
-                                  <div className="w-24 shrink-0 px-4 py-2.5 border-r-2 border-black">
-                                    <span className="text-xs font-black text-zinc-500">{r[0]}</span>
+                              {day.ablauf.map((r,i)=>{
+                                const isBuggy=r[3]&&r[3].includes("BABY SCHLAEFT");
+                                return (
+                                  <div key={i} className={"flex"+(isBuggy?" bg-blue-50":"")}>
+                                    <div className="w-24 shrink-0 px-4 py-2.5 border-r-2 border-black">
+                                      <span className="text-xs font-black text-zinc-500">{r[0]}</span>
+                                    </div>
+                                    <div className="flex-1 px-4 py-2.5">
+                                      <div className={"text-sm font-medium"+(isBuggy?" text-blue-800":" text-black")}>{r[1]}</div>
+                                      {r[3]&&<div className={"text-xs mt-0.5 font-medium"+(isBuggy?" text-blue-600":" text-amber-700")}>{isBuggy?"🛌 "+r[3]:"Baby: "+r[3]}</div>}
+                                    </div>
+                                    <div className="w-16 shrink-0 px-2 py-2.5 border-l-2 border-black text-right">
+                                      <span className="text-xs font-bold text-zinc-500">{r[2]}</span>
+                                    </div>
                                   </div>
-                                  <div className="flex-1 px-4 py-2.5">
-                                    <div className="text-sm text-black font-medium">{r[1]}</div>
-                                    {r[3]&&<div className="text-xs text-amber-700 mt-0.5 font-medium">Baby: {r[3]}</div>}
-                                  </div>
-                                  <div className="w-16 shrink-0 px-2 py-2.5 border-l-2 border-black text-right">
-                                    <span className="text-xs font-bold text-zinc-500">{r[2]}</span>
-                                  </div>
-                                </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           </div>
                         )}
                         {day.info&&day.info.length>0&&(
                           <div className="border-b-2 border-black">
-                            <div className="bg-black text-white px-4 py-1.5 text-xs font-black uppercase tracking-widest">TIPPS & OPTIONEN</div>
+                            <div className="bg-black text-white px-4 py-1.5 text-xs font-black uppercase tracking-widest">TIPPS & INFOS</div>
                             <div className="divide-y divide-zinc-100">
                               {day.info.map((tip,i)=>(
                                 <div key={i} className="px-4 py-2.5 flex gap-3">
@@ -492,7 +702,7 @@ function JapanReise(){
               <div className="bg-black text-white px-4 py-2 text-xs font-black uppercase tracking-widest">STRATEGIE</div>
               <div className="px-4 py-3 flex gap-3">
                 <div className="w-1.5 bg-violet-600 shrink-0"></div>
-                <p className="text-xs font-medium">Airbnb mit Kueche + sep. Schlafzimmer bevorzugen. Baby schlafen legen, ihr bleibt noch auf. (Empfehlung Isabelle)</p>
+                <p className="text-xs font-medium">Airbnb mit Kueche + sep. Schlafzimmer bevorzugen (Empfehlung Isabelle). Baby schlafen legen, ihr bleibt auf. Gab es ueberall auf Booking zu fairen Preisen.</p>
               </div>
             </div>
           </div>
@@ -523,7 +733,6 @@ function JapanReise(){
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
