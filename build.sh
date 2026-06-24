@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-# Build the project
 npm run build
 
-# Get asset filenames dynamically
 CSS=$(ls dist/client/assets/*.css | head -1 | xargs basename)
 JS_ROUTES=$(ls dist/client/assets/routes*.js | head -1 | xargs basename)
 JS_MAIN=$(ls dist/client/assets/index*.js | head -1 | xargs basename)
 
-# Create index.html
-cat > dist/client/index.html << HTML
+mkdir -p public/assets
+cp dist/client/assets/* public/assets/
+
+cat > public/index.html << HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -31,7 +31,6 @@ cat > dist/client/index.html << HTML
 </html>
 HTML
 
-# SPA redirect for Cloudflare Pages
-echo "/* /index.html 200" > dist/client/_redirects
+echo "/* /index.html 200" > public/_redirects
 
-echo "✅ Build complete: dist/client/ ready to deploy"
+echo "Build complete — output in public/"
