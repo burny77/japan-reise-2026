@@ -1,0 +1,156 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-vermilion: var(--vermilion);
+  --color-sumi: var(--sumi);
+  --color-matcha: var(--matcha);
+  --color-sand: var(--sand);
+  --color-clay: var(--clay);
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Warm, editorial Japan-inspired palette */
+  --paper: oklch(0.985 0.006 80);          /* warm off-white */
+  --sand: oklch(0.955 0.012 75);           /* muted card */
+  --clay: oklch(0.91 0.018 60);            /* subtle divider/badge */
+  --ink: oklch(0.22 0.015 60);             /* deep warm ink */
+  --sumi: oklch(0.42 0.012 60);            /* secondary text */
+  --vermilion: oklch(0.58 0.16 32);        /* muted torii red */
+  --matcha: oklch(0.55 0.08 145);          /* muted moss */
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--sand);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--clay);
+  --secondary-foreground: var(--ink);
+  --muted: var(--clay);
+  --muted-foreground: var(--sumi);
+  --accent: var(--vermilion);
+  --accent-foreground: var(--paper);
+  --destructive: oklch(0.55 0.18 28);
+  --destructive-foreground: var(--paper);
+  --border: oklch(0.88 0.012 70);
+  --input: oklch(0.88 0.012 70);
+  --ring: var(--vermilion);
+
+  --shadow-soft: 0 1px 2px oklch(0.22 0.015 60 / 0.04), 0 8px 24px -12px oklch(0.22 0.015 60 / 0.12);
+  --shadow-lift: 0 1px 2px oklch(0.22 0.015 60 / 0.05), 0 18px 40px -20px oklch(0.22 0.015 60 / 0.18);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body { background: var(--paper); color: var(--ink); }
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+  }
+}
+
+@utility shadow-soft { box-shadow: var(--shadow-soft); }
+@utility shadow-lift { box-shadow: var(--shadow-lift); }
+@utility hairline { border: 1px solid var(--border); }
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Leaflet container rounding */
+.leaflet-container { font-family: var(--font-sans); background: var(--sand); }
+
+/* Stronger "today" highlight on day cards */
+@utility today-ring {
+  position: relative;
+  border-color: var(--vermilion);
+  box-shadow: 0 0 0 1px var(--vermilion), var(--shadow-lift);
+}
+
+/* Print / PDF export */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+
+  html, body {
+    background: #ffffff !important;
+    color: var(--ink) !important;
+  }
+
+  /* Hide interactive chrome */
+  .no-print { display: none !important; }
+
+  /* Make sticky header static in print */
+  header.sticky {
+    position: static !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  /* Open all day cards, never break inside a card */
+  article.day-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid var(--border) !important;
+    margin-bottom: 10mm;
+  }
+
+  /* Force expanded panels visible in print mode */
+  .print-open .day-panel { display: block !important; }
+  .print-open .day-toggle-icon { display: none !important; }
+
+  /* Keep map blocks together */
+  .map-block { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Avoid color washing of accents */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  main { padding-bottom: 0 !important; }
+}
