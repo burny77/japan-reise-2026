@@ -6,6 +6,7 @@ import {
   DM,
   HOTELS,
   OVERVIEW,
+  PACKING,
   TODOS,
   TRIP_START,
   getTripDay,
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type TabId = "uebersicht" | "tage" | "bericht" | "hotels" | "todos";
+type TabId = "uebersicht" | "tage" | "bericht" | "hotels" | "todos" | "packen";
 
 const TABS: { id: TabId; lb: string }[] = [
   { id: "uebersicht", lb: "Überblick" },
@@ -39,6 +40,7 @@ const TABS: { id: TabId; lb: string }[] = [
   { id: "bericht", lb: "Reisebericht" },
   { id: "hotels", lb: "Hotels" },
   { id: "todos", lb: "Todos" },
+  { id: "packen", lb: "Packen" },
 ];
 
 // Pure visual coding by city — NO status meaning. Stays consistent so a
@@ -166,6 +168,7 @@ function Index() {
         {tab === "bericht" && !printMode && <Bericht cd={cd} isTrip={isTrip} />}
         {tab === "hotels" && !printMode && <Hotels />}
         {tab === "todos" && !printMode && <Todos />}
+        {tab === "packen" && !printMode && <Packing />}
       </main>
 
       <footer className="mx-auto max-w-3xl md:max-w-4xl px-5 sm:px-8 md:px-10 pb-12 pt-4 text-xs text-muted-foreground no-print">
@@ -913,6 +916,50 @@ function Todos() {
                 )}
               </li>
             ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+// =========================================================================
+// Packen — packing list, grows over time.
+// =========================================================================
+
+function Packing() {
+  const sections: { key: keyof typeof PACKING; lb: string; tone: string }[] = [
+    { key: "baby", lb: "Baby", tone: "text-accent" },
+    { key: "strategie", lb: "Gepäck-Strategie", tone: "text-foreground" },
+    { key: "offen", lb: "In Arbeit", tone: "text-sumi" },
+  ];
+  return (
+    <div className="pt-8 space-y-10">
+      <SectionLabel kicker="Packen" title="Was alles mitkommt." />
+      {sections.map((sec) => (
+        <section key={sec.key}>
+          <div className="flex items-baseline justify-between mb-4">
+            <h3 className={"font-display text-xl " + sec.tone}>{sec.lb}</h3>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              {PACKING[sec.key].length} Punkte
+            </span>
+          </div>
+          <ul className="rounded-2xl hairline bg-card divide-y divide-border/70 overflow-hidden shadow-soft">
+            {PACKING[sec.key].map(
+              (item: { t: string; note?: string }, i) => (
+                <li key={i} className="flex items-start gap-3 px-5 py-3.5">
+                  <span className="mt-1 inline-block h-3.5 w-3.5 rounded border border-foreground/40 shrink-0" />
+                  <span className="flex-1">
+                    <span className="text-sm block">{item.t}</span>
+                    {item.note && (
+                      <span className="text-xs text-muted-foreground block mt-0.5">
+                        {item.note}
+                      </span>
+                    )}
+                  </span>
+                </li>
+              )
+            )}
           </ul>
         </section>
       ))}
