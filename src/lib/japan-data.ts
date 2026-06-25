@@ -403,3 +403,20 @@ export const TODOS = {
     { t:"Kyoto Tag 18 Detail: Gepaeck-Logistik (Shinkansen am Tag 19 = Gepaeck vorab per Takkyubin?)" },
   ],
 } as const;
+
+export const PACKING = {
+  baby: [
+    { t: "Viel Babynahrung & Praemilch", note: "In Japan kaum ohne Salz/Zucker erhaeltlich und teuer (Tipp Isabelle) — fuer die erste Reisehaelfte einpacken" },
+    { t: "Waschtuecher von Dr. Beckmann" },
+    { t: "Babytrage + leichter Buggy", note: "Trage fuer Treppen/holprige Wege: Gio-ji, Otagi, Fushimi oben, Higashiyama-Gassen" },
+    { t: "Windel-Vorrat fuer die ersten Tage" },
+    { t: "Sonnenschutz Baby", note: "Anfang Sept. heiss/schwuel — Sonnenhut, leichte Decke fuer Buggy" },
+  ],
+  strategie: [
+    { t: "Sehr wenig Gepaeck — bewusst leicht reisen" },
+    { t: "Notgepaeck griffbereit im Handgepaeck", note: "Wechselkleidung Baby + Eltern, Windeln, etwas Babynahrung — falls Hauptkoffer per Takkyubin getrennt unterwegs ist" },
+  ],
+  offen: [
+    { t: "Weitere Punkte folgen — Liste wird laufend ergaenzt" },
+  ],
+} as const;
