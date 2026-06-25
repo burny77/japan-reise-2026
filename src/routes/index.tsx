@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Ein redaktionelles Reise-Logbuch: Tokio, Kamakura, Hakone, Kyoto, Nara, Osaka — Tag für Tag, mit Karten, Hotels und Todos.",
+          "Ein redaktionelles Reise-Logbuch: Tokio, Kamakura, Hakone, Osaka, Kyoto — Tag für Tag, mit Karten, Hotels und Todos.",
       },
       { property: "og:title", content: "Japan 2026 — 21 Tage Reiseplan" },
       {
