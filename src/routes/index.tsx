@@ -99,40 +99,25 @@ function Index() {
     );
   };
 
-  const exportPdf = async () => {
+  const exportPdf = () => {
     setExporting(true);
-    setTab("tage");
-    setQuery("");
-    setPrintMode(true);
-    // Allow React to render all expanded cards + maps to mount + tiles to load
-    await new Promise((r) => setTimeout(r, 2600));
-    try {
+    setTimeout(() => {
       window.print();
-    } finally {
-      // Restore UI after print dialog closes
-      setTimeout(() => {
-        setPrintMode(false);
-        setExporting(false);
-      }, 300);
-    }
+      setTimeout(() => setExporting(false), 400);
+    }, 80);
   };
 
-  // Listen for print finish to also restore state if user cancels
+  // Reset exporting after print dialog closes
   useEffect(() => {
-    const onAfter = () => {
-      setPrintMode(false);
-      setExporting(false);
-    };
+    const onAfter = () => setExporting(false);
     window.addEventListener("afterprint", onAfter);
     return () => window.removeEventListener("afterprint", onAfter);
   }, []);
 
   return (
+    <>
     <div
-      className={
-        "min-h-screen bg-background text-foreground " +
-        (printMode ? "print-open" : "")
-      }
+      className="app-shell min-h-screen bg-background text-foreground"
     >
       <Header
         tab={tab}
@@ -177,6 +162,159 @@ function Index() {
           <span>2.–22.9.2026</span>
         </div>
       </footer>
+    </div>
+    <PrintDocument />
+    </>
+  );
+}
+
+// =========================================================================
+// PrintDocument — compact 8-10 page PDF layout. Hidden on screen.
+// =========================================================================
+
+const PRINT_COLORS: Record<string, string> = {
+  Tokio: "#1a1a1a",
+  Kamakura: "#4a7c5f",
+  Hakone: "#b83232",
+  Osaka: "#374151",
+  Kyoto: "#c07a4a",
+  "Tokio → Narita": "#4a7c5f",
+};
+
+function PrintDocument() {
+  // 3 days per page
+  const dayPages: Day[][] = [];
+  for (let i = 0; i < DAYS.length; i += 3) dayPages.push(DAYS.slice(i, i + 3));
+
+  return (
+    <div className="print-doc">
+
+      {/* ── PAGE 1: COVER ──────────────────────────────────────── */}
+      <div className="pc-cover">
+        <p className="pc-kicker">Reise-Logbuch · September 2026 · Familie + Baby</p>
+        <h1 className="pc-title">Japan</h1>
+        <p className="pc-sub">2. bis 22. September · 21 Tage · 2 Erwachsene + Baby (11 Mon.)</p>
+
+        <div className="pc-route-row">
+          {(Array.from(HOTELS) as typeof HOTELS[number][]).map((h, i, arr) => (
+            <div key={h.s} className="pc-route-stop">
+              <div className="pc-rs-name">{h.s}</div>
+              <div className="pc-rs-n">{h.nt}N</div>
+              <div className="pc-rs-d">{h.d}</div>
+              {i < arr.length - 1 && <div className="pc-rs-arrow">→</div>}
+            </div>
+          ))}
+        </div>
+
+        <div className="pc-flights">
+          <div>✈&nbsp; FRA → HND &nbsp;·&nbsp; Di 1.9.&nbsp;22:20 Uhr &nbsp;·&nbsp; Emirates via Dubai (17 Std.)</div>
+          <div>✈&nbsp; NRT → FRA &nbsp;·&nbsp; Di 22.9.&nbsp;22:30 Uhr &nbsp;·&nbsp; Emirates via Dubai (21 Std. 45 Min.)</div>
+        </div>
+      </div>
+
+      {/* ── PAGES 2-8: TAGE (3 per page) ─────────────────────── */}
+      {dayPages.map((pageDays, pi) => (
+        <div key={pi} className="pc-daypage">
+          {pageDays.map((day) => {
+            const dot = PRINT_COLORS[day.ort] ?? "#1a1a1a";
+            // Pick max 5 ablauf entries: first 2 + distribute middle + last
+            const ab = day.ablauf;
+            const picks = ab.length <= 5 ? ab : [ab[0], ab[1], ab[Math.floor(ab.length / 2)], ab[ab.length - 2], ab[ab.length - 1]];
+            return (
+              <div key={day.nr} className="pc-day">
+                <div className="pc-day-head">
+                  <span className="pc-day-nr">{String(day.nr).padStart(2, "0")}</span>
+                  <div>
+                    <div className="pc-day-ort" style={{ color: dot }}>
+                      {day.datum}&nbsp;·&nbsp;{day.ort}
+                    </div>
+                    <div className="pc-day-hotel">{day.hotel}</div>
+                  </div>
+                </div>
+
+                <div className="pc-highlights">
+                  {day.top3.map((h, i) => (
+                    <div key={i} className="pc-h">
+                      <span className="pc-h-tri">▸</span>
+                      <span>{h.replace(/^⭐ /, "")}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pc-ablauf">
+                  {picks.map((row, i) => (
+                    <div key={i} className="pc-ab">
+                      <span className="pc-ab-t">{row[0].split("–")[0]}</span>
+                      <span className="pc-ab-a">{row[1].length > 72 ? row[1].slice(0, 72) + "…" : row[1]}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {day.info[0] && (
+                  <div className="pc-tip">
+                    {day.info[0].length > 100 ? day.info[0].slice(0, 100) + "…" : day.info[0]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ))}
+
+      {/* ── LAST PAGE: Hotels + Todos + Packen ───────────────── */}
+      <div className="pc-lastpage">
+        <h2 className="pc-sec">Unterkünfte &amp; Buchungen</h2>
+        <table className="pc-htable">
+          <tbody>
+            {(Array.from(HOTELS) as typeof HOTELS[number][]).map((h) => (
+              <tr key={h.s}>
+                <td className="pc-hs">{h.s}</td>
+                <td className="pc-hn">{h.n}</td>
+                <td className="pc-hd">{h.d}&nbsp;·&nbsp;{h.nt}N</td>
+                <td className="pc-hst">{h.st}</td>
+                <td className="pc-hk">{h.k}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="pc-twocol">
+          <div>
+            <h2 className="pc-sec">Kritisch</h2>
+            {TODOS.kritisch.map((t, i) => (
+              <div key={i} className="pc-td">
+                <span className="pc-tdbox">☐</span>
+                <span className="pc-tdt">{t.t}</span>
+                {"f" in t && t.f && <span className="pc-tdf">{t.f as string}</span>}
+              </div>
+            ))}
+            <h2 className="pc-sec pc-sec-gap">Wichtig</h2>
+            {TODOS.wichtig.map((t, i) => (
+              <div key={i} className="pc-td"><span className="pc-tdbox">☐</span><span className="pc-tdt">{t.t}</span></div>
+            ))}
+          </div>
+
+          <div>
+            <h2 className="pc-sec">Packen</h2>
+            {PACKING.baby.map((t, i) => (
+              <div key={i} className="pc-td">
+                <span className="pc-tdbox">☐</span>
+                <span className="pc-tdt">{t.t}{t.note ? ` — ${t.note}` : ""}</span>
+              </div>
+            ))}
+            {PACKING.strategie.map((t, i) => (
+              <div key={i} className="pc-td">
+                <span className="pc-tdbox">☐</span>
+                <span className="pc-tdt">{t.t}{t.note ? ` — ${t.note}` : ""}</span>
+              </div>
+            ))}
+            <h2 className="pc-sec pc-sec-gap">Empfohlen</h2>
+            {TODOS.empfohlen.slice(0, 4).map((t, i) => (
+              <div key={i} className="pc-td"><span className="pc-tdbox">☐</span><span className="pc-tdt">{t.t}</span></div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
