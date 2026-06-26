@@ -114,43 +114,250 @@
 }
 
 /* Print / PDF export */
+/* =========================================================
+   SCREEN: hide print document
+   ========================================================= */
+.print-doc { display: none !important; }
+
+/* =========================================================
+   PRINT: hide app, show compact PrintDocument
+   ========================================================= */
 @media print {
-  @page { size: A4; margin: 14mm 12mm; }
+  @page { size: A4 portrait; margin: 13mm 11mm; }
 
-  html, body {
-    background: #ffffff !important;
-    color: var(--ink) !important;
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  /* Hide everything except print doc */
+  .app-shell { display: none !important; }
+
+  .print-doc {
+    display: block !important;
+    font-family: var(--font-sans), -apple-system, "Helvetica Neue", sans-serif;
+    color: #1a1a1a;
+    font-size: 8pt;
+    line-height: 1.4;
+    background: #fff;
   }
 
-  /* Hide interactive chrome */
-  .no-print { display: none !important; }
-
-  /* Make sticky header static in print */
-  header.sticky {
-    position: static !important;
-    background: transparent !important;
-    backdrop-filter: none !important;
-    border-bottom: 1px solid var(--border) !important;
+  /* ── COVER ───────────────────────────────── */
+  .pc-cover {
+    height: calc(297mm - 26mm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    page-break-after: always;
   }
 
-  /* Open all day cards, never break inside a card */
-  article.day-card {
-    break-inside: avoid;
-    page-break-inside: avoid;
-    box-shadow: none !important;
-    border: 1px solid var(--border) !important;
-    margin-bottom: 10mm;
+  .pc-kicker {
+    font-size: 7.5pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c07a4a;
+    margin: 0 0 5mm;
   }
 
-  /* Force expanded panels visible in print mode */
-  .print-open .day-panel { display: block !important; }
-  .print-open .day-toggle-icon { display: none !important; }
+  .pc-title {
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 80pt;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0 0 4mm;
+  }
 
-  /* Keep map blocks together */
-  .map-block { break-inside: avoid; page-break-inside: avoid; }
+  .pc-sub {
+    font-size: 10pt;
+    color: #555;
+    margin: 0 0 10mm;
+  }
 
-  /* Avoid color washing of accents */
-  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pc-route-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0 2mm;
+    padding: 5mm 0;
+    border-top: 0.3mm solid #ddd;
+    border-bottom: 0.3mm solid #ddd;
+    margin-bottom: 8mm;
+    width: 100%;
+  }
 
-  main { padding-bottom: 0 !important; }
+  .pc-route-stop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5mm;
+    padding: 0 3mm;
+  }
+
+  .pc-rs-name { font-size: 9pt; font-weight: 600; }
+  .pc-rs-n    { font-size: 7pt; color: #c07a4a; font-weight: 600; }
+  .pc-rs-d    { font-size: 6.5pt; color: #777; }
+
+  .pc-rs-arrow {
+    font-size: 12pt;
+    color: #ccc;
+    padding-top: 3mm;
+    line-height: 1;
+  }
+
+  .pc-flights {
+    font-size: 8pt;
+    color: #555;
+    line-height: 2;
+  }
+
+  /* ── DAY PAGES (3 days per page) ────────── */
+  .pc-daypage {
+    page-break-before: always;
+    display: flex;
+    flex-direction: column;
+    gap: 3.5mm;
+    height: calc(297mm - 26mm);
+    overflow: hidden;
+  }
+
+  .pc-day {
+    flex: 1;
+    border: 0.25mm solid #ddd;
+    border-radius: 2mm;
+    padding: 3mm 4mm 2.5mm;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5mm;
+  }
+
+  .pc-day-head {
+    display: flex;
+    gap: 3mm;
+    align-items: baseline;
+    padding-bottom: 2mm;
+    border-bottom: 0.25mm solid #eee;
+  }
+
+  .pc-day-nr {
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 26pt;
+    font-weight: 300;
+    line-height: 1;
+    color: #1a1a1a;
+    min-width: 14mm;
+  }
+
+  .pc-day-ort {
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .pc-day-hotel {
+    font-size: 6.5pt;
+    color: #888;
+    margin-top: 0.5mm;
+  }
+
+  /* Highlights */
+  .pc-highlights { display: flex; flex-direction: column; gap: 0.5mm; }
+
+  .pc-h {
+    display: flex;
+    gap: 1.5mm;
+    font-size: 7.5pt;
+    line-height: 1.35;
+  }
+
+  .pc-h-tri { color: #c07a4a; flex-shrink: 0; font-size: 6pt; margin-top: 0.5mm; }
+
+  /* Ablauf */
+  .pc-ablauf { display: flex; flex-direction: column; gap: 0.4mm; flex: 1; }
+
+  .pc-ab { display: flex; gap: 2mm; font-size: 6.8pt; line-height: 1.3; }
+
+  .pc-ab-t {
+    min-width: 13mm;
+    flex-shrink: 0;
+    color: #c07a4a;
+    font-size: 6.3pt;
+    font-weight: 500;
+  }
+
+  .pc-ab-a { color: #333; flex: 1; }
+
+  /* Tip */
+  .pc-tip {
+    font-size: 6.2pt;
+    color: #888;
+    border-left: 0.8mm solid #e8d5c4;
+    padding-left: 2mm;
+    line-height: 1.3;
+    margin-top: auto;
+  }
+
+  /* ── LAST PAGE ───────────────────────────── */
+  .pc-lastpage { page-break-before: always; }
+
+  .pc-sec {
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 13pt;
+    font-weight: 300;
+    margin: 0 0 2.5mm;
+    padding-bottom: 1mm;
+    border-bottom: 0.25mm solid #ddd;
+  }
+
+  .pc-sec-gap { margin-top: 5mm; }
+
+  /* Hotels table */
+  .pc-htable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.5pt;
+    margin-bottom: 6mm;
+  }
+
+  .pc-htable tr { border-bottom: 0.2mm solid #f0f0f0; }
+  .pc-htable td { padding: 1.8mm 2mm; vertical-align: top; }
+
+  .pc-hs { font-weight: 700; color: #c07a4a; width: 18mm; }
+  .pc-hn { color: #222; }
+  .pc-hd { color: #666; width: 26mm; }
+  .pc-hst { font-weight: 500; width: 35mm; }
+  .pc-hk { text-align: right; font-weight: 600; width: 18mm; }
+
+  /* Two-column layout for todos/packing */
+  .pc-twocol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+  }
+
+  /* Todo rows */
+  .pc-td {
+    display: flex;
+    gap: 1.5mm;
+    font-size: 7pt;
+    line-height: 1.4;
+    margin-bottom: 1.2mm;
+    align-items: flex-start;
+  }
+
+  .pc-tdbox { flex-shrink: 0; color: #aaa; }
+  .pc-tdt   { flex: 1; color: #333; }
+
+  .pc-tdf {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 6pt;
+    color: #c0392b;
+    font-weight: 700;
+    background: #fef2f2;
+    padding: 0.3mm 1.5mm;
+    border-radius: 1mm;
+  }
 }
