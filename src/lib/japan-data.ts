@@ -198,7 +198,7 @@ export const DAYS: Day[] = [
       ["16:00–18:00","Hotelumgebung erkunden: Shinsaibashi 5 Min. zu Fuss","120 Min.","Erste Eindruecke; kein Programm-Stress"],
       ["18:00–20:00","Dinner Osaka-Einstieg: Okonomiyaki oder Kushikatsu — ~1.500 Y","120 Min.",""],
     ],
-    info:["Osaka = Foodie-Hauptstadt Japans; entspannter und lustiger als Tokyo","Wichtig: Osaka-Hotel noch buchen! (wurde storniert) — Airbnb mit Kueche empfohlen (Isabelle)"]},
+    info:["Osaka = Foodie-Hauptstadt Japans; entspannter und lustiger als Tokyo","Airbnb: 3 Min. zu Fuss zum Bahnhof, Namba 3 Min. mit Zug — 4,89★, Gaeste-Favorit ✓"]},
 
   { nr:11, datum:"Sa 12.9.", ort:"Osaka", strecke:"Osaka → Osaka", hotel:"Osaka (neu buchen!)",
     top3:["Dotonbori (Osaks Neon-Herz, Glico-Mann, Kanal) — kostenlos + Street Food ~500–1.500 Y","Kuromon Ichiba Market (130 Staende, 150 J. alt) — kostenlos, essen ~1.000 Y","Naniwa Camera Shinsaibashi (Gebrauchtkameras) — kein Eintritt"],
@@ -367,7 +367,7 @@ export const DAYS: Day[] = [
 export const HOTELS = [
   { s:"Tokio 1",    n:"Comfort Hotel ERA Tokyo Higashi Kanda", d:"3.–8.9.",  nt:5, k:"509 €",      b:"warn",  st:"gebucht, NOCH NICHT bezahlt!", sto:"bis 31.08.", bb:"anfragen" },
   { s:"Hakone",     n:"Ryokan Gora: Yunosumika / Setsugetsuka / Ajisai",      d:"8.–11.9.", nt:3, k:"~300–500 €",b:"todo",  st:"noch buchen!",              sto:"—",         bb:"bestaetigen" },
-  { s:"Osaka",      n:"Airbnb Osaka (Kueche + sep. Schlafzimmer empfohlen!)", d:"11.–15.9.",nt:4, k:"~150–200 €",b:"todo",  st:"storniert — neu buchen!",   sto:"—",         bb:"Pflicht" },
+  { s:"Osaka",      n:"Airbnb: 3 Min. zu Fuss zum Bahnhof, Namba 3 Min. Zug — 4,89★ (27 Bew., Gaeste-Favorit)", d:"10.–14.9.", nt:4, k:"241 €", b:"ok", st:"gebucht ✓ (Airbnb)", sto:"kostenlos bis 05.09.", bb:"bestaetigen" },
   { s:"Kyoto",      n:"Rihga Royal Hotel Kyoto",                              d:"15.–20.9.",nt:5, k:"450 €",      b:"warn",  st:"bezahlt — Datum auf 15.9. aendern! (anrufen)", sto:"bis 05.09.", bb:"anfragen" },
   { s:"Tokio 2",    n:"Airbnb: Kueche + sep. Schlafzimmer (noch suchen!)",   d:"20.–22.9.",nt:2, k:"~90–120 €",  b:"todo",  st:"noch buchen!",              sto:"—",         bb:"Pflicht" },
 ] as const;
@@ -376,7 +376,7 @@ export const TODOS = {
   kritisch: [
     { t:"Tokio 1 bezahlen — Comfort Hotel 509 €", f:"bis 31.08." },
     { t:"Hakone Gora-Ryokan buchen (3 Naechte 8.–11.9.): Yunosumika / Setsugetsuka / Ajisai", f:"sofort" },
-    { t:"Osaka NEU buchen — storniert (Booking)! Airbnb mit Kueche + sep. Schlafzimmer (11.–15.9.)", f:"sofort" },
+    { t:"Osaka Airbnb bezahlen — 241 € werden am 28.08. abgebucht (Visa)", f:"bis 28.08." },
     { t:"Kyoto Rihga Royal: Check-in auf 15.9. aendern — anrufen! (bereits bezahlt)", f:"bis 05.09." },
     { t:"Tokio 2 Airbnb buchen — Kueche + sep. Schlafzimmer (20.–22.9.)", f:"bald" },
   ],
