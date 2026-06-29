@@ -365,7 +365,8 @@ export const DAYS: Day[] = [
 ];
 
 export const HOTELS = [
-  { s:"Tokio 1",    n:"Comfort Hotel ERA Tokyo Higashi Kanda", d:"3.–8.9.",  nt:5, k:"509 €",      b:"warn",  st:"gebucht, NOCH NICHT bezahlt!", sto:"bis 31.08.", bb:"anfragen" },
+  { s:"Tokio 1 (Option A)",  n:"Comfort Hotel ERA Tokyo Higashi Kanda", d:"3.–8.9.",  nt:5, k:"509 €",  b:"warn",  st:"gebucht, noch nicht bezahlt — Entscheidung bis 31.08.", sto:"bis 31.08.", bb:"anfragen" },
+  { s:"Tokio 1 (Option B)",  n:"Airbnb Morishita (森下) — Backup, wird weiter gesucht", d:"3.–8.9.",  nt:5, k:"368 €",  b:"info",  st:"gebucht ✓ — 74 € bezahlt, 294 € am 18.08.", sto:"KOSTENLOS bis 08.08.!", bb:"bestaetigen" },
   { s:"Hakone",     n:"Ryokan Gora: Yunosumika / Setsugetsuka / Ajisai",      d:"8.–11.9.", nt:3, k:"~300–500 €",b:"todo",  st:"noch buchen!",              sto:"—",         bb:"bestaetigen" },
   { s:"Osaka",      n:"Airbnb: 3 Min. zu Fuss zum Bahnhof, Namba 3 Min. Zug — 4,89★ (27 Bew., Gaeste-Favorit)", d:"10.–14.9.", nt:4, k:"241 €", b:"ok", st:"gebucht ✓ (Airbnb)", sto:"kostenlos bis 05.09.", bb:"bestaetigen" },
   { s:"Kyoto",      n:"Rihga Royal Hotel Kyoto",                              d:"15.–20.9.",nt:5, k:"450 €",      b:"warn",  st:"bezahlt — Datum auf 15.9. aendern! (anrufen)", sto:"bis 05.09.", bb:"anfragen" },
@@ -374,7 +375,7 @@ export const HOTELS = [
 
 export const TODOS = {
   kritisch: [
-    { t:"Tokio 1 bezahlen — Comfort Hotel 509 €", f:"bis 31.08." },
+    { t:"TOKIO 1 ENTSCHEIDUNG: Option A (Comfort Hotel ERA, 509 €, bis 31.08. zahlen) ODER Option B (Morishita Airbnb, 368 €, bis 08.08. kostenlos stornierbar) — eins behalten, eins stornieren!", f:"bis 08.08." },
     { t:"Hakone Gora-Ryokan buchen (3 Naechte 8.–11.9.): Yunosumika / Setsugetsuka / Ajisai", f:"sofort" },
     { t:"Osaka Airbnb bezahlen — 241 € werden am 28.08. abgebucht (Visa)", f:"bis 28.08." },
     { t:"Kyoto Rihga Royal: Check-in auf 15.9. aendern — anrufen! (bereits bezahlt)", f:"bis 05.09." },
