@@ -19,7 +19,7 @@ export const OVERVIEW: DayMap = {
 };
 
 export const DM: Record<number, DayMap> = {
-  1:  { c: [35.61,139.75], z:11, s: [{ n:"Haneda Airport",c:[35.549,139.780]},{ n:"ATM + SIM + Suica (Terminal)",c:[35.549,139.780]},{ n:"Comfort Hotel ERA",c:[35.691,139.780]}]},
+  1:  { c: [35.61,139.78], z:11, s: [{ n:"Haneda Airport",c:[35.549,139.780]},{ n:"ATM + SIM + Suica (Terminal)",c:[35.549,139.780]},{ n:"Airbnb Chitose (Sumida)",c:[35.690,139.797]}]},
   2:  { c: [35.71,139.79], z:14, s: [{ n:"Senso-ji Tempel",c:[35.715,139.797]},{ n:"Nakamise Strasse",c:[35.712,139.796]},{ n:"Asakusa Culture Center (8.OG, kostenlos)",c:[35.711,139.796]},{ n:"Sumida River Walk",c:[35.700,139.800]}]},
   3:  { c: [35.681,139.697], z:13, s: [{ n:"Map Camera Shinjuku",c:[35.694,139.703]},{ n:"Meiji-Schrein (Shinto, Wald)",c:[35.676,139.699]},{ n:"Yoyogi Park",c:[35.671,139.696]},{ n:"Harajuku Omotesando",c:[35.665,139.712]},{ n:"Isetan Depachika (Food-Hall UG)",c:[35.690,139.703]}]},
   4:  { c: [35.670,139.750], z:13, s: [{ n:"Tsukiji Outer Market (Option A)",c:[35.665,139.770]},{ n:"Tokyo Skytree (Option B)",c:[35.710,139.810]},{ n:"Ueno Park (Option C)",c:[35.715,139.773]},{ n:"Hamarikyu Gardens / Ginza",c:[35.660,139.763]}]},
@@ -52,7 +52,7 @@ export type Day = {
 };
 
 export const DAYS: Day[] = [
-  { nr:1, datum:"Mi 2.9.", ort:"Tokio", strecke:"Haneda → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+  { nr:1, datum:"Mi 2.9.", ort:"Tokio", strecke:"Haneda → Tokio", hotel:"Airbnb Chitose 3-8-6, Sumida (Morishita Station 3 Min.)",
     top3:["Ankunft Haneda 22:20 Uhr","ATM + SIM + Suica direkt am Flughafen (~8.500 Y / 47 €)","Taxi zum Hotel — ~4.000 Y (~22 €)"],
     ablauf:[
       ["22:20","Landung + Immigration + Gepaeck","~40 Min.","Wickelraum Terminal 2 vorhanden, auch nachts"],
@@ -60,12 +60,12 @@ export const DAYS: Day[] = [
       ["23:10","SIM-Karte: IIJmio-Automat — 15 GB/30 Tage ca. 3.000 Y (~16 €)","10 Min.","Sofort einstecken, Netz aktiv"],
       ["23:20","Suica-Karte: Ticketautomat — 500 Y Kaution + 5.000 Y Guthaben (~30 €)","10 Min.","Suica = U-Bahn, JR, Bus, Konbini, Automaten"],
       ["23:40","Taxi zum Hotel — 3.500–6.000 Y (~19–33 €)","~30 Min.","Baby schlaeeft"],
-      ["00:10","Hotel Check-in, Zimmer","20 Min.",""],
+      ["00:10","Airbnb Check-in (Chitose 3-8-6, Sumida)","20 Min.","Schluessel-Uebergabe oder Lockbox — vorab mit Host klaeren"],
       ["00:30+","Sofort schlafen!","—","Auch IHR habt Jetlag — Isabelle warnt: erster Tag ist hart!"],
     ],
-    info:["Suica bei Heimreise: 500 Y Kaution + Restguthaben rueckerstattbar an jedem JR-Automaten","Asakusa Culture Center 8.OG: Kostenlos, keine Tickets noetig, Mo–So 9–21 Uhr"]},
+    info:["Suica bei Heimreise: 500 Y Kaution + Restguthaben rueckerstattbar an jedem JR-Automaten","Asakusa Culture Center 8.OG: Kostenlos, keine Tickets noetig, Mo–So 9–21 Uhr","Naechster Bahnhof: Morishita Station (Toei Shinjuku + Oedo Linie), 3 Min. Fussweg"]},
 
-  { nr:2, datum:"Do 3.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+  { nr:2, datum:"Do 3.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Airbnb Chitose 3-8-6, Sumida (Morishita Station 3 Min.)",
     top3:["Senso-ji Tempel (645 n.Chr.) — kostenlos","Nakamise Strasse + Asakusa Culture Center 8.OG — kostenlos","Sumida River Walk"],
     ablauf:[
       ["07:00–08:30","Ausschlafen + Fruehstueck Hotel (inkl.)","90 Min.","Baby wacht durch Jetlag frueh auf — Zeit lassen"],
@@ -79,11 +79,11 @@ export const DAYS: Day[] = [
     ],
     info:["Keine Reservation noetig fuer Ramen/Tonkatsu unter 2.000 Y","Asakusa frueh morgens: Kaum Touristen vor 9 Uhr, perfekte Fotostimmung (Empfehlung Michelle)"]},
 
-  { nr:3, datum:"Fr 4.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+  { nr:3, datum:"Fr 4.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Airbnb Chitose 3-8-6, Sumida (Morishita Station 3 Min.)",
     top3:["Map Camera Shinjuku (6 Etagen Gebrauchtkameras) — kein Eintritt","Meiji-Schrein + Yoyogi Park — kostenlos","Harajuku Omotesando (Luxus-Allee, breite Buergersteige) — kostenlos"],
     ablauf:[
       ["07:30–08:30","Fruehstueck Hotel (inkl.)","60 Min.","Reisepass einpacken — Steuerfreiheit Map Camera!"],
-      ["09:00–09:30","U-Bahn zu Shinjuku — ~230 Y","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Zug"],
+      ["09:00–09:30","Toei Shinjuku Linie: Morishita → Shinjuku DIREKT (~30 Min., ~280 Y)","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf — DIREKTLINIE von eurer Unterkunft!"],
       ["09:30–11:30","Map Camera Nishi-Shinjuku (6 Etagen) — kein Eintritt","2 Std.","Steuerfreiheit: Reisepass vorlegen, min. 5.000 Y Einkauf"],
       ["11:30–12:30","Meiji-Schrein (175ha Wald mitten in Tokyo) — kostenlos","60 Min.","Ruhig, Buggy ok"],
       ["12:30–13:30","Yoyogi Park + Isetan Depachika Lunch — ~1.000–2.000 Y","60 Min.","Baby kann auf Wiese krabbeln"],
@@ -93,7 +93,7 @@ export const DAYS: Day[] = [
     ],
     info:["Map Camera: Nishi-Shinjuku 1-12-5, 10–15% guenstiger als BIC/Yodobashi, Steuerfreiheit mit Reisepass","Depachika Isetan: 2–3 Untergeschosse, Dutzende Food-Counter, Bento, Sushi, Patisserie — kein Tisch noetig","Harajuku Omotesando: Japans Champs-Elysees; Omotesando Hills (Tadao Ando) am Ende sehenswert"]},
 
-  { nr:4, datum:"Sa 5.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+  { nr:4, datum:"Sa 5.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Airbnb Chitose 3-8-6, Sumida (Morishita Station 3 Min.)",
     top3:["Aktiver Tokyo-Tag (5 Optionen A–E)","Baby-Schlafrhythmus als Planungsraster","Abend entspannt"],
     ablauf:[
       ["07:00–08:30","Fruehstueck (Option A: 06:30 fuer Tsukiji!)","90 Min.",""],
@@ -105,11 +105,11 @@ export const DAYS: Day[] = [
     ],
     info:["A: Tsukiji Outer Market — fruehstes Sushi Tokyos (06:30 Aufbruch!) — kostenlos + Essen ~800–1.500 Y","B: Tokyo Skytree 634m — Ticket vorab! ~3.100 Y (~17 €) + Asakusa Retro (alt-Tokyo, Rikschas)","C: Ueno Park + Nationalmuseum — Park kostenlos; Museum 1.000 Y; klimatisiert, babytauglich","E: Yanaka-Viertel — hist. Alt-Tokyo, enge Gassen, kleine Tempel, kein Touristen-Stress — kostenlos"]},
 
-  { nr:5, datum:"So 6.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+  { nr:5, datum:"So 6.9.", ort:"Tokio", strecke:"Tokio → Tokio", hotel:"Airbnb Chitose 3-8-6, Sumida (Morishita Station 3 Min.)",
     top3:["Hamarikyu Gardens (400-J. Kaisergarten) — 300 Y (~1,60 €)","Ginza Boulevard (Japans Nobel-Allee) — kostenlos","Kamakura-Vorbereitung: Suica aufladen, Rucksack packen"],
     ablauf:[
       ["08:00–09:00","Fruehstueck Hotel (inkl.)","60 Min.",""],
-      ["09:00–09:30","U-Bahn zu Shiodome/Hamarikyu — ~230 Y","30 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf"],
+      ["09:00–09:25","Toei Oedo: Morishita → Tsukishima → Kachidoki (nahe Hamarikyu), ~230 Y","25 Min.","BABY SCHLAEFT IM BUGGY: Kurzschlaf im Zug"],
       ["09:30–11:30","Hamarikyu Gardens (Kaisergarten am Wasser) — 300 Y","2 Std.","Weitlaeufig, Kinderwagen ok, Teezeremonie ~510 Y optional"],
       ["11:30–12:15","Ginza-Spaziergang (kurz, vor der Mittagshitze) — kostenlos","45 Min.","Breite Buergersteige; danach rein ins Kuehle"],
       ["12:15–13:30","Mittagessen + Ginza Six / Depachika (klimatisiert) — ~1.500 Y","75 Min.","HITZE-SCHUTZ: 12–14 Uhr in klimatisierten Kaufhaeusern (Ginza Six, Mitsukoshi-Depachika)"],
@@ -119,7 +119,7 @@ export const DAYS: Day[] = [
     ],
     info:["JR Yokosuka Line Kamakura: ~950 Y/Person einfach, kein Vorabticket, per Suica","Alternative Ginza/Hamarikyu: Nakameguro (Trendkanal, Cafes) + Shimokitazawa (Bohem-Viertel, Vintage) — beide kostenlos"]},
 
-  { nr:6, datum:"Mo 7.9.", ort:"Kamakura", strecke:"Tokio → Tokio", hotel:"Comfort Hotel ERA Tokyo",
+  { nr:6, datum:"Mo 7.9.", ort:"Kamakura", strecke:"Tokio → Tokio", hotel:"Airbnb Chitose 3-8-6, Sumida (Morishita Station 3 Min.)",
     top3:["Kotoku-in Grosser Buddha (13m Bronze, 1252, UNESCO) — 300 Y","Yuigahama Strand (Sandstrand, Baby im Sand)","Tsurugaoka Hachimangu (Shinto-Schrein 1063) — kostenlos"],
     ablauf:[
       ["07:30–09:00","Fruehstueck, Baby fertig, Rucksack","90 Min.",""],
@@ -137,7 +137,7 @@ export const DAYS: Day[] = [
     top3:["Odakyu Romancecar (Panorama-Luxuszug) — ~1.400 Y/Person gesamt (~7,50 €)","Hakone-Tozan-Bahn (1919, 3 Spitzkehren) — im Freepass","Kaiseki-Dinner + Onsen Nacht 1 (im Ryokanpreis enthalten!)"],
     ablauf:[
       ["07:00–08:00","Fruehstueck Hotel (letztes ERA-Fruehstueck)","60 Min.","Gepaeck per Takkyubin vorausschicken — ~1.500 Y/Koffer"],
-      ["09:00–09:30","U-Bahn Shinjuku — ~230 Y","30 Min.","BABY SCHLAEFT IM BUGGY"],
+      ["09:00–09:30","Toei Shinjuku Linie: Morishita → Shinjuku DIREKT (~30 Min., ~280 Y)","30 Min.","BABY SCHLAEFT IM BUGGY: Direktlinie — ideal fuer Hakone-Abfahrt!"],
       ["10:00–11:20","Romancecar Shinjuku → Hakone-Yumoto — ~1.400 Y/Person","80 Min.","Panoramafenster, breite Sitze; Baby schlaeeft"],
       ["11:20–12:00","Hakone-Yumoto: Onsen Manju probieren (~200 Y) + Pause","40 Min.","Wickelraum am Bahnhof"],
       ["12:00–12:40","Tozan-Bahn → Gora (3 Spitzkehren, 1919!) — im Freepass","40 Min.","Faszinierend"],
@@ -365,8 +365,7 @@ export const DAYS: Day[] = [
 ];
 
 export const HOTELS = [
-  { s:"Tokio 1 (Option A)",  n:"Comfort Hotel ERA Tokyo Higashi Kanda", d:"3.–8.9.",  nt:5, k:"509 €",  b:"warn",  st:"gebucht, noch nicht bezahlt — Entscheidung bis 31.08.", sto:"bis 31.08.", bb:"anfragen" },
-  { s:"Tokio 1 (Option B)",  n:"Airbnb Morishita (森下) — Backup, wird weiter gesucht", d:"3.–8.9.",  nt:5, k:"368 €",  b:"info",  st:"gebucht ✓ — 74 € bezahlt, 294 € am 18.08.", sto:"KOSTENLOS bis 08.08.!", bb:"bestaetigen" },
+  { s:"Tokio 1",  n:"Airbnb Chitose 3-8-6, Sumida Ward (bei Morishita Station)", d:"3.–8.9.",  nt:5, k:"368 €",  b:"ok",  st:"gebucht ✓ — 74 € bezahlt, 294 € am 18.08.", sto:"stornierbar bis 08.08.", bb:"bestaetigen" },
   { s:"Hakone",     n:"Ryokan Gora: Yunosumika / Setsugetsuka / Ajisai",      d:"8.–11.9.", nt:3, k:"~300–500 €",b:"todo",  st:"noch buchen!",              sto:"—",         bb:"bestaetigen" },
   { s:"Osaka",      n:"Airbnb: 3 Min. zu Fuss zum Bahnhof, Namba 3 Min. Zug — 4,89★ (27 Bew., Gaeste-Favorit)", d:"10.–14.9.", nt:4, k:"241 €", b:"ok", st:"gebucht ✓ (Airbnb)", sto:"kostenlos bis 05.09.", bb:"bestaetigen" },
   { s:"Kyoto",      n:"Rihga Royal Hotel Kyoto",                              d:"15.–20.9.",nt:5, k:"450 €",      b:"warn",  st:"bezahlt — Datum auf 15.9. aendern! (anrufen)", sto:"bis 05.09.", bb:"anfragen" },
@@ -375,7 +374,7 @@ export const HOTELS = [
 
 export const TODOS = {
   kritisch: [
-    { t:"TOKIO 1 ENTSCHEIDUNG: Option A (Comfort Hotel ERA, 509 €, bis 31.08. zahlen) ODER Option B (Morishita Airbnb, 368 €, bis 08.08. kostenlos stornierbar) — eins behalten, eins stornieren!", f:"bis 08.08." },
+    { t:"Tokio 1 Airbnb: 294 € werden am 18.08. abgebucht (Saldo nach 74 € Anzahlung)", f:"bis 18.08." },
     { t:"Hakone Gora-Ryokan buchen (3 Naechte 8.–11.9.): Yunosumika / Setsugetsuka / Ajisai", f:"sofort" },
     { t:"Osaka Airbnb bezahlen — 241 € werden am 28.08. abgebucht (Visa)", f:"bis 28.08." },
     { t:"Kyoto Rihga Royal: Check-in auf 15.9. aendern — anrufen! (bereits bezahlt)", f:"bis 05.09." },
