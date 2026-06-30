@@ -182,7 +182,7 @@ export const DAYS: Day[] = [
       ["16:00–18:00","Hotelumgebung erkunden: Shinsaibashi/Namba 3 Min. zu Fuss","120 Min.","Erste Eindruecke; kein Programm-Stress"],
       ["18:00–20:30","Dinner + Dotonbori bei Nacht (Glico-Mann, Neonlichter) — Street Food ~500–1.500 Y","150 Min.","Dotonbori abends am schoensten; Takoyaki, Okonomiyaki, Kushikatsu"],
     ],
-    info:["Osaka = Foodie-Hauptstadt Japans; entspannter und lustiger als Tokyo","Airbnb jetzt 10.–13.9. (3 Naechte) — UMBUCHUNG angefragt, Antwort steht aus","Dotonbori gleich am Ankunftsabend mitnehmen, da Osaka jetzt nur 3 Naechte hat"]},
+    info:["Osaka = Foodie-Hauptstadt Japans; entspannter und lustiger als Tokyo","Airbnb 10.–13.9. (3 Naechte) — bestaetigt ✓","Dotonbori gleich am Ankunftsabend mitnehmen, da Osaka jetzt nur 3 Naechte hat"]},
 
   { nr:10, datum:"Fr 11.9.", ort:"Osaka", strecke:"Osaka → Osaka", hotel:"Airbnb Osaka (gebucht ✓)",
     top3:["Dotonbori bei Tag + Naniwa Camera (Gebrauchtkameras) — kein Eintritt","Street Food Namba: Takoyaki, Kushikatsu — ~500–2.000 Y","Umeda Sky Building zum Sonnenuntergang — 1.500 Y (~8 €)"],
@@ -372,7 +372,7 @@ export const DAYS: Day[] = [
 export const HOTELS = [
   { s:"Tokio 1",  n:"Airbnb Chitose 3-8-6, Sumida Ward (bei Morishita Station)", d:"3.–8.9.",  nt:5, k:"368 €",  b:"ok",  st:"gebucht ✓ — 74 € bezahlt, 294 € am 18.08.", sto:"stornierbar bis 08.08.", bb:"bestaetigen" },
   { s:"Hakone",   n:"Ryokan Gora: Yunosumika / Setsugetsuka / Ajisai",      d:"8.–10.9.", nt:2, k:"~200–350 €",b:"todo",  st:"noch buchen!",              sto:"—",         bb:"bestaetigen" },
-  { s:"Osaka",    n:"Airbnb: 3 Min. zu Fuss zum Bahnhof, Namba 3 Min. Zug — 4,89★", d:"10.–13.9.", nt:3, k:"~180 €", b:"warn", st:"gebucht (4N) — UMBUCHUNG auf 3N angefragt!", sto:"kostenlos bis 05.09.", bb:"bestaetigen" },
+  { s:"Osaka",    n:"Airbnb: 3 Min. zu Fuss zum Bahnhof, Namba 3 Min. Zug — 4,89★", d:"10.–13.9.", nt:3, k:"~180 €", b:"ok", st:"gebucht ✓ — Umbuchung auf 3N bestaetigt", sto:"kostenlos bis 05.09.", bb:"bestaetigen" },
   { s:"Kyoto",    n:"Rihga Royal Hotel Kyoto",                              d:"13.–18.9.",nt:5, k:"450 €",      b:"warn",  st:"bezahlt — Datum auf 13.9. aendern! (anrufen)", sto:"bis 05.09.", bb:"anfragen" },
   { s:"Ito (Izu)",n:"Ryokan/Hotel Ito — noch auswaehlen (Jogasaki-Kueste in der Naehe)", d:"18.–20.9.",nt:2, k:"~250–400 €", b:"todo", st:"noch buchen!", sto:"—", bb:"bestaetigen" },
   { s:"Tokio 2",  n:"Airbnb: Kueche + sep. Schlafzimmer, Narita-Anbindung wichtig (Ueno/Asakusa ideal)", d:"20.–22.9.",nt:2, k:"~180–240 €",  b:"todo",  st:"noch buchen!",              sto:"—",         bb:"Pflicht" },
@@ -380,10 +380,9 @@ export const HOTELS = [
 
 export const TODOS = {
   kritisch: [
-    { t:"Osaka Airbnb UMBUCHUNG auf 3 Naechte (10.–13.9.) angefragt — Antwort vom Host steht aus, nachfassen!", f:"vor 05.09." },
     { t:"Tokio 1 Airbnb: 294 € werden am 18.08. abgebucht (Saldo nach 74 € Anzahlung)", f:"bis 18.08." },
     { t:"Hakone Gora-Ryokan buchen (2 Naechte 8.–10.9.!): Yunosumika / Setsugetsuka / Ajisai", f:"sofort" },
-    { t:"Osaka Airbnb bezahlen — 241 € werden am 28.08. abgebucht (Visa) — Betrag aendert sich bei Umbuchung auf 3N", f:"bis 28.08." },
+    { t:"Osaka Airbnb (3N bestaetigt): Zahlung am 28.08. via Visa", f:"bis 28.08." },
     { t:"Kyoto Rihga Royal: Check-in auf 13.9. aendern (NICHT 14./15.9.!) — anrufen! (bereits bezahlt)", f:"bis 05.09." },
     { t:"Ito Ryokan/Hotel buchen (2 Naechte 18.–20.9., nahe Jogasaki-Kueste)", f:"bald" },
     { t:"Tokio 2 Airbnb buchen — 2 Naechte (20.–22.9.), Kueche + sep. Schlafzimmer, gute Narita-Anbindung (Ueno/Asakusa)", f:"bald" },
